@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>St Bartholomew's Churchyard — Old Whittington</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --parchment: #f5eed8;
+  --parchment-dark: #e8dfc0;
+  --ink: #2a1f0e;
+  --ink-mid: #1a1208;
+  --ink-deep: #0e0a05;
+  --faded: #8a7560;
+  --faded-light: #b09878;
+  --accent: #8a3020;
+  --zone-nw-c: #6490c0;
+  --zone-ne-c: #50a078;
+  --zone-sw-c: #c06490;
+  --zone-se-c: #8c64c0;
+  --sidebar-w: 258px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink);
+  font-family: 'Inconsolata', monospace;
+  color: var(--parchment);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+header {
+  background: var(--ink);
+  height: 44px;
+  padding: 0 14px;
+  border-bottom: 2px solid #5a4a30;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.toggle-btn {
+  background: none;
+  border: 1px solid #5a4a30;
+  color: var(--faded);
+  width: 32px; height: 32px;
+  border-radius: 3px; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.15s, color 0.15s;
+}
+.toggle-btn:hover { background: #2a1f0e; color: var(--parchment); }
+header h1 {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.15rem; color: var(--parchment);
+  letter-spacing: 0.02em; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+header .subtitle {
+  font-size: 0.64rem; color: var(--faded);
+  letter-spacing: 0.07em; text-transform: uppercase;
+  white-space: nowrap; flex-shrink: 0;
+}
+.body-wrap { display: flex; flex: 1; overflow: hidden; position: relative; }
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--ink-mid);
+  border-right: 1px solid #3a2a18;
+  display: flex; flex-direction: column; overflow: hidden;
+  transition: width 0.25s ease, opacity 0.2s ease;
+  z-index: 10;
+}
+.sidebar.collapsed { width: 0; opacity: 0; border-right: none; pointer-events: none; }
+.sidebar-tabs { display: flex; border-bottom: 1px solid #3a2a18; flex-shrink: 0; }
+.tab-btn {
+  flex: 1; padding: 8px 4px; background: none; border: none;
+  border-bottom: 2px solid transparent; color: var(--faded);
+  font-family: 'Inconsolata', monospace; font-size: 0.67rem;
+  letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+  white-space: nowrap; transition: color 0.2s, border-color 0.2s;
+}
+.tab-btn:hover { color: var(--parchment-dark); }
+.tab-btn.active { color: var(--parchment); border-bottom-color: var(--faded-light); }
+.tab-panel { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+.tab-panel.active { display: flex; }
+.zone-list { padding: 8px; overflow-y: auto; flex-shrink: 0; }
+.zone-btn {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; margin-bottom: 3px; background: none;
+  border: 1px solid transparent; border-radius: 3px; color: var(--parchment);
+  font-family: 'Inconsolata', monospace; font-size: 0.74rem;
+  cursor: pointer; text-align: left; transition: background 0.15s, border-color 0.15s;
+}
+.zone-btn:hover { background: #2a1f0e; border-color: #5a4a30; }
+.zone-btn.active { background: #2a1f0e; border-color: var(--faded-light); }
+.zone-pip { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.zone-sub { font-size: 0.60rem; color: var(--faded); margin-top: 1px; line-height: 1.3; }
+.zone-divider { height: 1px; background: #2a1f0e; flex-shrink: 0; }
+.zone-info { font-size: 0.62rem; color: var(--faded); padding: 5px 10px; line-height: 1.5; flex-shrink: 0; }
+.zone-families { flex: 1; overflow-y: auto; padding: 4px 8px 8px; }
+.family-item {
+  padding: 3px 8px; font-size: 0.73rem; color: var(--parchment-dark);
+  cursor: pointer; border-radius: 2px; border-left: 2px solid transparent;
+  transition: background 0.1s, border-color 0.1s; line-height: 1.65;
+}
+.family-item:hover { background: #2a1f0e; border-left-color: var(--faded); }
+.family-item.active { background: #2a1f0e; border-left-color: var(--parchment); color: var(--parchment); font-weight: 600; }
+.name-search-wrap { padding: 8px; border-bottom: 1px solid #2a1f0e; flex-shrink: 0; }
+#name-search {
+  width: 100%; background: #2a1f0e; border: 1px solid #5a4a30;
+  color: var(--parchment); padding: 5px 8px;
+  font-family: 'Inconsolata', monospace; font-size: 0.74rem;
+  border-radius: 3px; outline: none;
+}
+#name-search:focus { border-color: var(--faded); }
+#name-search::placeholder { color: #5a4a30; }
+.name-list { flex: 1; overflow-y: auto; padding: 4px 8px; }
+.name-item {
+  padding: 3px 8px; font-size: 0.73rem; color: var(--parchment-dark);
+  cursor: pointer; border-radius: 2px; border-left: 2px solid transparent;
+  display: flex; justify-content: space-between; align-items: center;
+  line-height: 1.65; transition: background 0.1s, border-color 0.1s;
+}
+.name-item:hover { background: #2a1f0e; border-left-color: var(--faded); }
+.name-item.active { background: #2a1f0e; border-left-color: var(--parchment); color: var(--parchment); }
+.zone-tag {
+  font-size: 0.57rem; padding: 1px 5px; border-radius: 2px;
+  flex-shrink: 0; margin-left: 6px; color: #fff; opacity: 0.85;
+}
+.legend-content { padding: 10px 12px; overflow-y: auto; flex: 1; font-size: 0.7rem; line-height: 1.6; }
+.legend-section { font-size: 0.61rem; color: var(--faded); text-transform: uppercase; letter-spacing: 0.08em; margin: 12px 0 5px; }
+.legend-row { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; color: var(--parchment-dark); }
+.l-pip { width: 13px; height: 13px; border-radius: 2px; flex-shrink: 0; }
+.l-pip.circle { border-radius: 50%; }
+.l-pip.dashed { background: none; border: 2px dashed rgba(196,103,58,0.85); border-radius: 2px; }
+.l-pip.church-pip { background: none; border: 2px solid rgba(220,210,180,0.7); border-radius: 1px; }
+.l-pip.diamond-shape { width:10px;height:10px;background:rgba(180,160,110,0.7);transform:rotate(45deg);flex-shrink:0;border-radius:1px; }
+.l-tree { width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1; }
+.l-note { font-size: 0.62rem; color: var(--faded); line-height: 1.55; margin-bottom: 6px; }
+.map-container {
+  flex: 1; position: relative; overflow: hidden;
+  background: var(--ink-deep); cursor: crosshair;
+}
+svg#map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+.grid-line { stroke: #181008; stroke-width: 0.5; }
+.callout-bubble {
+  position: absolute; background: var(--ink);
+  border: 1px solid #5a4a30; border-left: 3px solid var(--accent);
+  padding: 7px 12px; font-family: 'Inconsolata', monospace;
+  font-size: 0.75rem; color: var(--parchment);
+  pointer-events: none; z-index: 200; max-width: 220px;
+  box-shadow: 3px 5px 18px rgba(0,0,0,0.8); border-radius: 2px; display: none;
+}
+.callout-bubble .cb-name { font-family: 'IM Fell English', serif; font-size: 0.95rem; line-height: 1.3; margin-bottom: 3px; }
+.callout-bubble .cb-zone { font-size: 0.61rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--faded); }
+.callout-bubble .cb-hint { font-size: 0.60rem; color: var(--faded); margin-top: 4px; line-height: 1.4; }
+.zoom-controls {
+  position: absolute; top: 10px; right: 12px;
+  display: flex; flex-direction: column; gap: 4px; z-index: 100;
+}
+.zoom-btn {
+  width: 30px; height: 30px; background: rgba(20,14,5,0.92);
+  border: 1px solid #5a4a30; color: var(--parchment);
+  font-size: 1rem; cursor: pointer; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: serif; transition: background 0.15s;
+}
+.zoom-btn:hover { background: #3a2a18; }
+.north-arrow {
+  position: absolute; bottom: 32px; right: 16px;
+  font-family: 'IM Fell English', serif; font-size: 0.7rem; color: var(--faded);
+  text-align: center; z-index: 100; pointer-events: none;
+}
+.north-arrow svg { display: block; margin: 0 auto 2px; }
+.info-strip {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: rgba(14,10,5,0.9); padding: 4px 14px;
+  font-size: 0.63rem; color: var(--faded);
+  border-top: 1px solid #2a1f0e; z-index: 50;
+  display: flex; gap: 20px; align-items: center;
+}
+.info-strip .hi { color: var(--parchment); }
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--ink-mid); }
+::-webkit-scrollbar-thumb { background: #3a2a18; border-radius: 3px; }
+
+/* Back to website link */
+.back-link {
+  font-size: 0.64rem;
+  color: var(--faded);
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+  padding: 4px 8px;
+  border: 1px solid #3a2a18;
+  border-radius: 3px;
+  transition: color 0.15s, border-color 0.15s;
+}
+.back-link:hover { color: var(--parchment); border-color: #5a4a30; }
+
+/* ── MOBILE / TABLET ── */
+/* Tablet portrait and smaller: hide subtitle */
+@media (max-width: 768px) {
+  header .subtitle { display: none; }
+  header h1 { font-size: 1rem; }
+}
+
+/* Phone landscape and tablet portrait: narrower sidebar */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 220px; }
+}
+
+/* Phone portrait: auto-collapse sidebar, larger touch targets */
+@media (max-width: 540px) {
+  :root { --sidebar-w: 88vw; }
+
+  /* Sidebar overlays map rather than pushing it */
+  .sidebar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    z-index: 50;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.6);
+  }
+
+  /* Map always fills full width on phone */
+  .map-container { width: 100%; }
+
+  /* Larger touch targets in lists */
+  .family-item { padding: 6px 8px; font-size: 0.78rem; }
+  .name-item   { padding: 6px 8px; font-size: 0.78rem; }
+  .zone-btn    { padding: 9px 10px; }
+  .tab-btn     { padding: 10px 4px; }
+
+  /* Zoom buttons larger on touch */
+  .zoom-btn { width: 38px; height: 38px; font-size: 1.2rem; }
+
+  /* Callout wider on small screen */
+  .callout-bubble { max-width: 80vw; }
+
+  /* Back link text shorter */
+  .back-link-full { display: none; }
+  .back-link-short { display: inline; }
+}
+
+@media (min-width: 541px) {
+  .back-link-short { display: none; }
+}
+</style>
+</head>
+<body>
+<header>
+  <button class="toggle-btn" onclick="toggleSidebar()" title="Toggle panel">☰</button>
+  <h1>St Bartholomew's Churchyard &mdash; Old Whittington</h1>
+  <span class="subtitle">Phase 1 — Oldest Graves · Whittington History &amp; Heritage Group</span>
+  <a href="https://whittingtonhistory.org" class="back-link" title="Return to Whittington History">
+    <span class="back-link-full">← whittingtonhistory.org</span>
+    <span class="back-link-short">← Site</span>
+  </a>
+</header>
+<div class="body-wrap">
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" onclick="switchTab('zones',this)">Zones</button>
+      <button class="tab-btn" onclick="switchTab('names',this)">Names A–Z</button>
+      <button class="tab-btn" onclick="switchTab('legend',this)">Key</button>
+    </div>
+
+    <!-- ZONES TAB -->
+    <div class="tab-panel active" id="tab-zones">
+      <div class="zone-list">
+        <button class="zone-btn active" id="zbtn-all" onclick="selectZone('all',this)">
+          <div class="zone-pip" style="background:var(--faded)"></div>
+          <div><div>All zones</div></div>
+        </button>
+        <button class="zone-btn" id="zbtn-nw" onclick="selectZone('nw',this)">
+          <div class="zone-pip" style="background:var(--zone-nw-c)"></div>
+          <div><div>North-West</div><div class="zone-sub">Along church wall, Lych Gate side</div></div>
+        </button>
+        <button class="zone-btn" id="zbtn-ne" onclick="selectZone('ne',this)">
+          <div class="zone-pip" style="background:var(--zone-ne-c)"></div>
+          <div><div>North-East</div><div class="zone-sub">Along church wall, towards N-S path</div></div>
+        </button>
+        <button class="zone-btn" id="zbtn-sw" onclick="selectZone('sw',this)">
+          <div class="zone-pip" style="background:var(--zone-sw-c)"></div>
+          <div><div>South-West</div><div class="zone-sub">South side, Lych Gate half</div></div>
+        </button>
+        <button class="zone-btn" id="zbtn-se" onclick="selectZone('se',this)">
+          <div class="zone-pip" style="background:var(--zone-se-c)"></div>
+          <div><div>South-East</div><div class="zone-sub">South side, towards gates &amp; footpath</div></div>
+        </button>
+      </div>
+      <div class="zone-divider"></div>
+      <div class="zone-info" id="zone-info">Select a zone to browse families, or search by name in Names A–Z.</div>
+      <div class="zone-families" id="zone-families"></div>
+    </div>
+
+    <!-- NAMES TAB -->
+    <div class="tab-panel" id="tab-names">
+      <div class="name-search-wrap">
+        <input type="text" id="name-search" placeholder="Search family name…" oninput="filterNames(this.value)">
+      </div>
+      <div class="name-list" id="name-list"></div>
+    </div>
+
+    <!-- KEY TAB -->
+    <div class="tab-panel" id="tab-legend">
+      <div class="legend-content">
+        <div class="legend-section">About this map</div>
+        <div class="l-note">This map covers Phase 1 of the St Bartholomew's churchyard survey — the oldest grave area in the western section. The full churchyard contains 12+ areas and 16,000–17,000 recorded names. Further phases will be added as survey work progresses.</div>
+
+        <div class="legend-section">Finding a grave</div>
+        <div class="l-note">Enter through the <strong>Lych Gate</strong> on the west side. The north boundary line runs straight east from the Lych Gate to the far corner. Use the zone descriptions below to navigate to the right area of the burial ground, then look for the grave within that section.</div>
+
+        <div class="legend-section">Zones</div>
+        <div class="legend-row"><div class="l-pip" style="background:var(--zone-nw-c)"></div>North-West — along church wall, Lych Gate side</div>
+        <div class="legend-row"><div class="l-pip" style="background:var(--zone-ne-c)"></div>North-East — along church wall, towards N-S path</div>
+        <div class="legend-row"><div class="l-pip" style="background:var(--zone-sw-c)"></div>South-West — south side, Lych Gate half</div>
+        <div class="legend-row"><div class="l-pip" style="background:var(--zone-se-c)"></div>South-East — south side, towards gates &amp; footpath</div>
+
+        <div class="legend-section">Buildings &amp; Features</div>
+        <div class="legend-row"><div class="l-pip church-pip"></div>St Bartholomew's Church (1863)</div>
+        <div class="l-note">Runs west-east along the north side. A ~22ft path separates the church from the burial ground.</div>
+        <div class="legend-row" style="margin-top:6px"><div class="l-pip dashed"></div>Norman Church footprint c.1150</div>
+        <div class="l-note">From the Mettam ground plan (September 1850). Shows nave, north transept, south porch, tower (west end) and chancel (east end). Demolished 1863.</div>
+        <div class="legend-row" style="margin-top:6px"><div class="l-tree">🌲</div>Fir Tree West &amp; Fir Tree East</div>
+        <div class="l-note">Mark the east and west centre points of the Norman nave. Key GPS survey reference landmarks.</div>
+        <div class="legend-row" style="margin-top:6px"><div class="l-pip diamond-shape"></div>Boundary reference point</div>
+        <div class="l-note">GPS-logged perimeter points defining the Phase 1 boundary.</div>
+        <div class="legend-row" style="margin-top:6px"><div class="l-pip circle" style="background:#f5eed8;border:2px solid var(--accent);"></div>Selected grave location</div>
+        <div class="l-note">Shown when a family name is selected. Click again to deselect.</div>
+
+        <div class="legend-section">Navigation</div>
+        <div class="l-note">+/− or scroll wheel to zoom · Drag to pan · ⊙ resets view · ☰ shows/hides this panel</div>
+
+        <div class="legend-section">Survey</div>
+        <div class="l-note">GPS survey 2022–2026. Norman church footprint from the Mettam ground plan, September 1850. Compiled by the Whittington History &amp; Heritage Group.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAP -->
+  <div class="map-container" id="map-container">
+    <svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="callout-bubble" id="callout">
+      <div class="cb-name" id="cb-name"></div>
+      <div class="cb-zone" id="cb-zone"></div>
+      <div class="cb-hint" id="cb-hint"></div>
+    </div>
+    <div class="zoom-controls">
+      <button class="zoom-btn" onclick="zoom(1.3)">+</button>
+      <button class="zoom-btn" onclick="zoom(0.77)">−</button>
+      <button class="zoom-btn" onclick="resetView()" title="Reset">⊙</button>
+    </div>
+    <div class="north-arrow">
+      <svg width="18" height="26" viewBox="0 0 20 28">
+        <polygon points="10,2 5,22 10,18 15,22" fill="none" stroke="#8a7560" stroke-width="1.5"/>
+        <polygon points="10,2 10,18 5,22" fill="#8a7560"/>
+      </svg>
+      N
+    </div>
+    <div class="info-strip">
+      <span>Phase 1 families: <span class="hi" id="ib-total">—</span></span>
+      <span id="ib-selected"></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── ZONES ─────────────────────────────────────────────────────────────────────
+const ZONES = {
+  nw: { label:'North-West', hint:'Along the church wall, Lych Gate side', minLat:53.27260, maxLat:53.27300, minLng:-1.42580, maxLng:-1.42520, color:'#6490c0', fill:'rgba(100,144,192,0.22)', stroke:'rgba(100,144,192,0.75)' },
+  ne: { label:'North-East', hint:'Along the church wall, towards the N-S path', minLat:53.27260, maxLat:53.27300, minLng:-1.42520, maxLng:-1.42450, color:'#50a078', fill:'rgba(80,160,120,0.22)', stroke:'rgba(80,160,120,0.75)' },
+  sw: { label:'South-West', hint:'South side, Lych Gate half of the yard', minLat:53.27200, maxLat:53.27260, minLng:-1.42580, maxLng:-1.42520, color:'#c06490', fill:'rgba(192,100,144,0.22)', stroke:'rgba(192,100,144,0.75)' },
+  se: { label:'South-East', hint:'South side, towards the gates and footpath', minLat:53.27200, maxLat:53.27260, minLng:-1.42520, maxLng:-1.42450, color:'#8c64c0', fill:'rgba(140,100,192,0.22)', stroke:'rgba(140,100,192,0.75)' },
+};
+
+// ── CHURCHYARD BOUNDARY POLYGON (Phase 1) ─────────────────────────────────────
+// North boundary sits 20ft south of church south face (53.272917)
+// 20ft = ~0.0000548 deg lat → north boundary lat = 53.272862
+// Runs straight west-east across the full width of the burial ground
+// Clockwise from NW corner:
+const NORTH_BOUNDARY_LAT = 53.272862;
+const BOUNDARY = [
+  [NORTH_BOUNDARY_LAT, -1.425670], // NW corner (in line with Lych Gate, 20ft from church)
+  [NORTH_BOUNDARY_LAT, -1.425125], // NE corner (20ft from church, east end)
+  [53.272785, -1.424960],           // End south path
+  [53.272332, -1.424727],           // Gate 2
+  [53.272239, -1.424650],           // Gate 1 / footpath (SE corner)
+  [53.272292, -1.424700],           // S wall E
+  [53.272682, -1.425755],           // SW corner
+  [NORTH_BOUNDARY_LAT, -1.425670], // back to NW corner
+];
+
+// Paths deferred to later phase
+
+// ── BOUNDARY DIAMONDS ─────────────────────────────────────────────────────────
+const boundaryPoints = [
+  { lat:NORTH_BOUNDARY_LAT, lng:-1.425670 }, // NW corner (Lych Gate side, 20ft from church)
+  { lat:53.272682,           lng:-1.425755 }, // SW corner
+  { lat:53.272292,           lng:-1.424700 }, // S wall E
+  { lat:53.272332,           lng:-1.424727 }, // Gate 2
+  { lat:53.272239,           lng:-1.424650 }, // Gate 1
+  { lat:53.272785,           lng:-1.424960 }, // End south path
+  { lat:NORTH_BOUNDARY_LAT,  lng:-1.425125 }, // NE corner (Back wall N side, 20ft from church)
+];
+
+// ── CURRENT CHURCH ────────────────────────────────────────────────────────────
+const church = { minLat:53.272917, maxLat:53.273220, minLng:-1.425079, maxLng:-1.424627 };
+
+// ── FIR TREES ─────────────────────────────────────────────────────────────────
+const firTrees = [
+  { lat:53.2727084, lng:-1.4253073 },
+  { lat:53.2726994, lng:-1.4250822 },
+];
+
+// ── NORMAN CHURCH — from Mettam 1850 ─────────────────────────────────────────
+const NORMAN = {
+  nave:     { n:53.2727197, s:53.2726881, w:-1.4253530, e:-1.4250505 },
+  tower:    { n:53.2727197, s:53.2726881, w:-1.4253530, e:-1.4252372 },
+  chancel:  { n:53.2727163, s:53.2726915, w:-1.4250505, e:-1.4250086 },
+  transept: { n:53.2727513, s:53.2727197, w:-1.4252372, e:-1.4251511 },
+  porch:    { n:53.2726881, s:53.2726661, w:-1.4252159, e:-1.4251617 },
+};
+
+// ── FAMILY DATA ───────────────────────────────────────────────────────────────
+const RAW_FAMILIES = [
+  ["Mettam",53.27268,-1.42573],["Stead",53.27270,-1.42564],
+  ["Brightmore",53.27272,-1.42566],["Higgingbottom",53.27276,-1.42561],
+  ["Higgins / Banks / Chesney",53.27271,-1.42562],["Crofts",53.27267,-1.42569],
+  ["St John",53.27271,-1.42556],["Slagg",53.27270,-1.42560],
+  ["Stanley",53.27273,-1.42556],["Fox",53.27272,-1.42560],
+  ["Alton",53.27263,-1.42564],["Syddall",53.27266,-1.42561],
+  ["Bason",53.27267,-1.42555],["Moore",53.27264,-1.42553],
+  ["Sand",53.27261,-1.42555],["Shipstone",53.27264,-1.42550],
+  ["Siddall",53.27284,-1.42550],["Gladwin",53.27267,-1.42569],
+  ["Bargh",53.27266,-1.42567],["Gillet",53.27272,-1.42552],
+  ["Glossop",53.27262,-1.42553],["Gilberthorpe",53.27259,-1.42548],
+  ["Unwin",53.27263,-1.42543],["Hindes",53.27272,-1.42544],
+  ["Godfrey Shaw of Brampton",53.27269,-1.42544],
+  ["Naylor",53.27270,-1.42543],["Dixon / Oliver",53.27270,-1.42540],
+  ["Parkyns",53.27275,-1.42545],["Barlow",53.27272,-1.42547],
+  ["Cooke",53.27273,-1.42546],["Ward",53.27276,-1.42537],
+  ["Dixon Family",53.27268,-1.42538],["Dyson",53.27269,-1.42528],
+  ["Jenkinson",53.27269,-1.42528],["Green",53.27273,-1.42534],
+  ["Shore",53.27274,-1.42531],["Ashton",53.27269,-1.42532],
+  ["Stubbinge",53.27264,-1.42533],["Dixon ED",53.27268,-1.42535],
+  ["Pugh",53.27266,-1.42525],["Ed Turner",53.27271,-1.42546],
+  ["Mettam (NE)",53.27277,-1.42539],["Lowe",53.27271,-1.42498],
+  ["Britt",53.27278,-1.42511],["Brotherton",53.27271,-1.42487],
+  ["Walker",53.27272,-1.42490],["Vickers",53.27266,-1.42502],
+  ["Godber",53.27275,-1.42499],["Rhodes",53.27274,-1.42505],
+  ["Cooke (NE)",53.27276,-1.42502],["Blagden",53.27278,-1.42504],
+  ["Mason",53.27278,-1.42505],["Scattergood",53.27272,-1.42506],
+  ["Burgin CWG",53.27271,-1.42508],["Varney",53.27271,-1.42517],
+  ["Hewitt",53.27273,-1.42487],["Seager",53.27274,-1.42488],
+  ["Ross John of Hope",53.27276,-1.42487],["Musson William",53.27270,-1.42488],
+  ["Mitchell William",53.27275,-1.42471],["Johnson Elizabeth",53.27276,-1.42470],
+  ["Marsden",53.27270,-1.42472],["Green John 1894",53.27268,-1.42484],
+  ["Burton",53.27281,-1.42484],["Robinson Robert",53.27282,-1.42483],
+  ["Pendleton Thomas",53.27280,-1.42489],["Newton Richard",53.27285,-1.42496],
+  ["Froggatt",53.27254,-1.42538],["Belfitt",53.27254,-1.42534],
+  ["Harvey",53.27260,-1.42544],["Thorpe",53.27259,-1.42536],
+  ["Marr",53.27260,-1.42537],["Rodgers",53.27257,-1.42532],
+  ["Hinde",53.27257,-1.42531],["Smith",53.27262,-1.42526],
+  ["Cartwright",53.27259,-1.42527],["Wilcocks",53.27258,-1.42521],
+  ["Renard",53.27265,-1.42531],["Denton / Bower",53.27254,-1.42514],
+  ["Bishop / Bowmar",53.27251,-1.42518],["Pearson",53.27253,-1.42524],
+  ["Bulkeley / Hancock",53.27263,-1.42506],["Lalouel",53.27260,-1.42502],
+  ["Brown",53.27252,-1.42507],["Malkin",53.27249,-1.42506],
+  ["Widdowson",53.27255,-1.42515],["Key",53.27256,-1.42510],
+  ["Sprentall",53.27259,-1.42513],["Fletcher",53.27256,-1.42511],
+  ["Mettam Thomas",53.27254,-1.42510],["Mallender Mary",53.27251,-1.42508],
+  ["Thorp Robert 1762",53.27249,-1.42516],["Weston Charles",53.27249,-1.42522],
+  ["Banks Elizabeth",53.27247,-1.42522],["Bower John",53.27252,-1.42519],
+  ["Bower Elizabeth",53.27253,-1.42518],["Key William / Anne 1763",53.27253,-1.42518],
+  ["Vickers Candlin",53.27251,-1.42521],["More",53.27249,-1.42519],
+  ["Banks",53.27246,-1.42520],["Weston",53.27251,-1.42522],
+  ["Moore John Pillesly",53.27257,-1.42506],["Jenkenson Samuel",53.27266,-1.42498],
+  ["Walker Charles 1900",53.27266,-1.42501],["F H Martin",53.27265,-1.42505],
+  ["Fox Fred",53.27262,-1.42504],["Thorpe Gilbert",53.27259,-1.42503],
+  ["Mettam Mary",53.27250,-1.42476],["Mettam Thomas (elder)",53.27254,-1.42510],
+  ["Widdowson Eliza",53.27239,-1.42477],["Hoult Ann",53.27244,-1.42481],
+  ["Reeves Rebecca",53.27240,-1.42491],["Thorpe Sarah (wife of John)",53.27242,-1.42488],
+  ["Hoyle Anne",53.27240,-1.42488],["Montgomery Edward Richard",53.27240,-1.42486],
+  ["Habberjam Robert",53.27244,-1.42488],["Widdowson Eliz",53.27245,-1.42490],
+  ["Widdison Samuel",53.27245,-1.42492],["Cundy George / John",53.27247,-1.42493],
+  ["Thorpe Sarah (wife of George)",53.27243,-1.42495],["Green Dorothy",53.27248,-1.42485],
+  ["Richardson Grace of Dunston",53.27249,-1.42487],["Bargh Elizabeth",53.27248,-1.42489],
+  ["Newham Jane",53.27253,-1.42483],["Newham Charles",53.27250,-1.42486],
+  ["Art Green",53.27256,-1.42485],["Green Eliz / Eliza",53.27252,-1.42480],
+  ["Green Mary 1856",53.27263,-1.42478],["Green Henry 1758",53.27261,-1.42470],
+  ["Gillot Thomas",53.27263,-1.42480],["Maddock",53.27253,-1.42472],
+  ["Bestwick inc George",53.27256,-1.42469],["Widdowson Isabella",53.27242,-1.42472],
+  ["Lindley",53.27262,-1.42485],["S Taylor of Codnor",53.27262,-1.42489],
+  ["Harvey Hannah",53.27262,-1.42491],["Broomhead Joseph",53.27261,-1.42494],
+  ["Bulkeley Alice 1752",53.27261,-1.42493],["Ashley William",53.27260,-1.42496],
+  ["Mather George",53.27240,-1.42481],
+];
+
+const seenNames=new Set();
+const families=[];
+for(const r of RAW_FAMILIES){
+  if(seenNames.has(r[0])) continue;
+  seenNames.add(r[0]);
+  families.push({name:r[0],lat:r[1],lng:r[2],zone:getZone(r[1],r[2])});
+}
+families.sort((a,b)=>a.name.localeCompare(b.name));
+
+function getZone(lat,lng){
+  for(const [k,z] of Object.entries(ZONES)){
+    if(lat>=z.minLat&&lat<=z.maxLat&&lng>=z.minLng&&lng<=z.maxLng) return k;
+  }
+  const n=lat>=53.27260, w=lng<=-1.42520;
+  if(n&&w) return 'nw'; if(n&&!w) return 'ne';
+  if(!n&&w) return 'sw'; return 'se';
+}
+
+// ── PROJECTION ────────────────────────────────────────────────────────────────
+const allLats=[
+  ...families.map(f=>f.lat),
+  ...BOUNDARY.map(p=>p[0]),
+  ...firTrees.map(t=>t.lat),
+  church.minLat, church.maxLat,
+  NORMAN.transept.n, NORMAN.porch.s,
+];
+const allLngs=[
+  ...families.map(f=>f.lng),
+  ...BOUNDARY.map(p=>p[1]),
+  ...firTrees.map(t=>t.lng),
+  church.minLng, church.maxLng,
+  NORMAN.nave.w, NORMAN.chancel.e,
+];
+Object.values(ZONES).forEach(z=>{allLats.push(z.minLat,z.maxLat);allLngs.push(z.minLng,z.maxLng);});
+
+const minLat=Math.min(...allLats), maxLat=Math.max(...allLats);
+const minLng=Math.min(...allLngs), maxLng=Math.max(...allLngs);
+const dLat=maxLat-minLat, dLng=maxLng-minLng;
+
+function ll2xy(lat,lng,W,H){
+  const marg=36, uw=W-marg*2, uh=H-marg*2;
+  const sc=Math.min(uw/dLng, uh/dLat);
+  const offX=(uw-dLng*sc)/2+marg, offY=(uh-dLat*sc)/2+marg;
+  return{x:offX+(lng-minLng)*sc, y:offY+(maxLat-lat)*sc};
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let viewState={scale:1,tx:0,ty:0};
+let dragging=false,lastMouse=null;
+let activeZone=null,selectedFamily=null,sidebarOpen=true;
+
+const svg=document.getElementById('map');
+const container=document.getElementById('map-container');
+const callout=document.getElementById('callout');
+const sidebar=document.getElementById('sidebar');
+
+function applyTransform(){
+  const g=svg.querySelector('g.tg');
+  if(g)g.setAttribute('transform',`translate(${viewState.tx},${viewState.ty}) scale(${viewState.scale})`);
+}
+function toggleSidebar(){sidebarOpen=!sidebarOpen;sidebar.classList.toggle('collapsed',!sidebarOpen);setTimeout(renderMap,270);}
+
+function svgEl(tag,attrs){
+  const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
+  for(const[k,v] of Object.entries(attrs))e.setAttribute(k,String(v));
+  return e;
+}
+function svgTxt(content,attrs){const e=svgEl('text',attrs);e.textContent=content;return e;}
+
+// Convert boundary polygon to SVG points string
+function boundaryToPoints(W,H){
+  return BOUNDARY.map(p=>{const{x,y}=ll2xy(p[0],p[1],W,H);return x+','+y;}).join(' ');
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderMap(){
+  const W=container.clientWidth, H=container.clientHeight;
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  svg.innerHTML='';
+
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+
+  // Glow filter
+  const gf=svgEl('filter',{id:'glow'});
+  gf.appendChild(svgEl('feDropShadow',{dx:0,dy:0,stdDeviation:5,'flood-color':'rgba(245,238,216,0.7)'}));
+  defs.appendChild(gf);
+
+  // Boundary clip path — zones only show inside this polygon
+  const bClip=svgEl('clipPath',{id:'boundaryClip'});
+  const bPoly=svgEl('polygon',{points:boundaryToPoints(W,H)});
+  bClip.appendChild(bPoly);
+  defs.appendChild(bClip);
+
+  // Church clip
+  const ctlXY=ll2xy(church.maxLat,church.minLng,W,H);
+  const cbrXY=ll2xy(church.minLat,church.maxLng,W,H);
+  const cw=cbrXY.x-ctlXY.x, ch=cbrXY.y-ctlXY.y;
+  const cClip=svgEl('clipPath',{id:'churchClip'});
+  cClip.appendChild(svgEl('rect',{x:ctlXY.x,y:ctlXY.y,width:cw,height:ch}));
+  defs.appendChild(cClip);
+
+  svg.appendChild(defs);
+  svg.appendChild(svgEl('rect',{width:W,height:H,fill:'#0e0a05'}));
+
+  // Grid
+  const gg=document.createElementNS('http://www.w3.org/2000/svg','g');
+  for(let x=0;x<W;x+=50)gg.appendChild(svgEl('line',{x1:x,y1:0,x2:x,y2:H,class:'grid-line'}));
+  for(let y=0;y<H;y+=50)gg.appendChild(svgEl('line',{x1:0,y1:y,x2:W,y2:y,class:'grid-line'}));
+  svg.appendChild(gg);
+
+  const tg=document.createElementNS('http://www.w3.org/2000/svg','g');
+  tg.setAttribute('class','tg');
+
+  // ── Churchyard ground (interior fill, clipped to boundary) ─────────────────
+  const groundG=document.createElementNS('http://www.w3.org/2000/svg','g');
+  groundG.setAttribute('clip-path','url(#boundaryClip)');
+  groundG.appendChild(svgEl('polygon',{
+    points:boundaryToPoints(W,H),
+    fill:'rgba(40,35,20,0.6)',
+    stroke:'none'
+  }));
+  tg.appendChild(groundG);
+
+  // ── Zone fills — CLIPPED to boundary polygon ───────────────────────────────
+  const zoneG=document.createElementNS('http://www.w3.org/2000/svg','g');
+  zoneG.setAttribute('clip-path','url(#boundaryClip)');
+
+  for(const [key,z] of Object.entries(ZONES)){
+    const tl=ll2xy(z.maxLat,z.minLng,W,H);
+    const br=ll2xy(z.minLat,z.maxLng,W,H);
+    const isActive=activeZone===null||activeZone===key;
+    const isSelected=activeZone===key;
+    const r=svgEl('rect',{
+      x:tl.x,y:tl.y,width:br.x-tl.x,height:br.y-tl.y,
+      fill:isActive?z.fill:'rgba(20,14,8,0.4)',
+      stroke:z.stroke,'stroke-width':isSelected?2.5:1,rx:0
+    });
+    r.style.cursor='pointer';
+    r.addEventListener('click',()=>selectZoneById(key));
+    zoneG.appendChild(r);
+  }
+  tg.appendChild(zoneG);
+
+  // Zone labels — outside clip so they sit over the boundary line nicely
+  for(const [key,z] of Object.entries(ZONES)){
+    const tl=ll2xy(z.maxLat,z.minLng,W,H);
+    const br=ll2xy(z.minLat,z.maxLng,W,H);
+    const isActive=activeZone===null||activeZone===key;
+    // Clip label x to stay inside boundary roughly
+    const cx=Math.max(tl.x+20,Math.min(br.x-20,(tl.x+br.x)/2));
+    const cy=(tl.y+br.y)/2;
+    tg.appendChild(svgTxt(z.label,{
+      x:cx,y:cy+4,'text-anchor':'middle',
+      'font-family':'IM Fell English, serif','font-size':11,'font-style':'italic',
+      fill:isActive?z.stroke:'rgba(70,55,35,0.4)','pointer-events':'none'
+    }));
+  }
+
+  // ── Boundary polygon outline ───────────────────────────────────────────────
+  tg.appendChild(svgEl('polygon',{
+    points:boundaryToPoints(W,H),
+    fill:'none',
+    stroke:'rgba(180,160,110,0.7)',
+    'stroke-width':1.8,
+    'pointer-events':'none'
+  }));
+
+  // Boundary diamonds
+  boundaryPoints.forEach(b=>{
+    const{x,y}=ll2xy(b.lat,b.lng,W,H);
+    const s=4;
+    tg.appendChild(svgEl('polygon',{
+      points:`${x},${y-s} ${x+s},${y} ${x},${y+s} ${x-s},${y}`,
+      fill:'rgba(180,160,110,0.7)',stroke:'rgba(180,160,110,0.3)',
+      'stroke-width':0.8,'pointer-events':'none'
+    }));
+  });
+
+  // Lych Gate label
+  const lgXY=ll2xy(NORTH_BOUNDARY_LAT,-1.425670,W,H);
+  tg.appendChild(svgTxt('Lych Gate',{
+    x:lgXY.x-8,y:lgXY.y-8,'text-anchor':'end',
+    'font-family':'IM Fell English, serif','font-size':8,'font-style':'italic',
+    fill:'rgba(180,160,110,0.8)','pointer-events':'none'
+  }));
+
+  // ── North boundary line — straight east-west, 20ft south of church ───────────
+  const northBoundW=ll2xy(NORTH_BOUNDARY_LAT,-1.425670,W,H); // NW corner
+  const northBoundE=ll2xy(NORTH_BOUNDARY_LAT,-1.425125,W,H); // NE corner
+  tg.appendChild(svgEl('line',{
+    x1:northBoundW.x,y1:northBoundW.y,
+    x2:northBoundE.x,y2:northBoundE.y,
+    stroke:'rgba(180,160,110,0.85)',
+    'stroke-width':1.8,
+    'pointer-events':'none'
+  }));
+
+  // ── Current church ─────────────────────────────────────────────────────────
+  tg.appendChild(svgEl('rect',{
+    x:ctlXY.x,y:ctlXY.y,width:cw,height:ch,
+    fill:'rgba(210,195,160,0.22)',stroke:'rgba(220,210,180,0.85)',
+    'stroke-width':2,rx:2
+  }));
+  for(let i=-ch;i<cw+ch;i+=7){
+    tg.appendChild(svgEl('line',{
+      x1:ctlXY.x+i,y1:ctlXY.y,x2:ctlXY.x+i+ch,y2:ctlXY.y+ch,
+      stroke:'rgba(220,210,180,0.1)','stroke-width':0.6,
+      'clip-path':'url(#churchClip)','pointer-events':'none'
+    }));
+  }
+  const ccx=ctlXY.x+cw/2, ccy=ctlXY.y+ch/2;
+  tg.appendChild(svgTxt("St Bartholomew's Church",{
+    x:ccx,y:ccy-5,'text-anchor':'middle',
+    'font-family':'IM Fell English, serif','font-size':9,'font-style':'italic',
+    fill:'rgba(220,210,180,0.85)','pointer-events':'none'
+  }));
+  tg.appendChild(svgTxt('1863',{
+    x:ccx,y:ccy+8,'text-anchor':'middle',
+    'font-family':'IM Fell English, serif','font-size':8,'font-style':'italic',
+    fill:'rgba(220,210,180,0.65)','pointer-events':'none'
+  }));
+
+  // ── NORMAN CHURCH — Mettam 1850 ───────────────────────────────────────────
+  const nFill='rgba(196,103,58,0.18)', nStroke='rgba(196,103,58,0.88)';
+  const drawBox=(box,extraFill)=>{
+    const tl=ll2xy(box.n,box.w,W,H), br=ll2xy(box.s,box.e,W,H);
+    tg.appendChild(svgEl('rect',{
+      x:tl.x,y:tl.y,width:br.x-tl.x,height:br.y-tl.y,
+      fill:extraFill||nFill,stroke:nStroke,
+      'stroke-width':2,'stroke-dasharray':'5,3','pointer-events':'none'
+    }));
+    return{x:tl.x,y:tl.y,w:br.x-tl.x,h:br.y-tl.y};
+  };
+  const naveR=drawBox(NORMAN.nave);
+  drawBox(NORMAN.tower,'rgba(196,103,58,0.30)');
+  drawBox(NORMAN.chancel,'rgba(196,103,58,0.24)');
+  drawBox(NORMAN.transept);
+  drawBox(NORMAN.porch);
+
+  // Norman label
+  tg.appendChild(svgTxt('Norman Church c.1150',{
+    x:naveR.x+naveR.w/2,y:naveR.y+naveR.h/2+4,'text-anchor':'middle',
+    'font-family':'IM Fell English, serif','font-size':8,'font-style':'italic',
+    fill:'rgba(196,103,58,0.82)','pointer-events':'none'
+  }));
+  // Tower / Chancel labels
+  const towerR=ll2xy(NORMAN.tower.n,NORMAN.tower.w,W,H);
+  const towerBR=ll2xy(NORMAN.tower.s,NORMAN.tower.e,W,H);
+  tg.appendChild(svgTxt('Tower',{
+    x:(towerR.x+towerBR.x)/2,y:(towerR.y+towerBR.y)/2+3,'text-anchor':'middle',
+    'font-family':'Inconsolata, monospace','font-size':6,
+    fill:'rgba(196,103,58,0.72)','pointer-events':'none'
+  }));
+  const chanR=ll2xy(NORMAN.chancel.n,NORMAN.chancel.w,W,H);
+  const chanBR=ll2xy(NORMAN.chancel.s,NORMAN.chancel.e,W,H);
+  tg.appendChild(svgTxt('Chancel',{
+    x:(chanR.x+chanBR.x)/2,y:(chanR.y+chanBR.y)/2+3,'text-anchor':'middle',
+    'font-family':'Inconsolata, monospace','font-size':6,
+    fill:'rgba(196,103,58,0.72)','pointer-events':'none'
+  }));
+
+  // ── Fir trees ─────────────────────────────────────────────────────────────
+  firTrees.forEach(t=>{
+    const{x,y}=ll2xy(t.lat,t.lng,W,H);
+    tg.appendChild(svgEl('rect',{x:x-1,y:y,width:2,height:4,fill:'rgba(80,60,20,0.8)','pointer-events':'none'}));
+    tg.appendChild(svgEl('circle',{cx:x,cy:y-1,r:5,fill:'rgba(40,90,40,0.9)',stroke:'rgba(60,130,60,0.5)','stroke-width':0.8,'pointer-events':'none'}));
+  });
+
+  // ── Selected grave ─────────────────────────────────────────────────────────
+  if(selectedFamily){
+    const f=families.find(fd=>fd.name===selectedFamily);
+    if(f){
+      const{x,y}=ll2xy(f.lat,f.lng,W,H);
+      const zc=ZONES[f.zone]?.color||'#8a7560';
+      [20,13].forEach((r,i)=>{
+        tg.appendChild(svgEl('circle',{cx:x,cy:y,r,fill:'none',stroke:zc,
+          'stroke-width':1,opacity:i===0?0.18:0.38,'pointer-events':'none'}));
+      });
+      tg.appendChild(svgEl('circle',{cx:x,cy:y,r:7,fill:'#f5eed8',stroke:zc,
+        'stroke-width':2.5,filter:'url(#glow)','pointer-events':'none'}));
+      positionCallout(x,y,W,H,f);
+    }
+  } else { callout.style.display='none'; }
+
+  svg.appendChild(tg);
+  applyTransform();
+}
+
+// ── CALLOUT ───────────────────────────────────────────────────────────────────
+function positionCallout(svgX,svgY,W,H,f){
+  const sx=svgX*viewState.scale+viewState.tx, sy=svgY*viewState.scale+viewState.ty;
+  callout.style.display='block';
+  document.getElementById('cb-name').textContent=f.name;
+  document.getElementById('cb-zone').textContent=ZONES[f.zone]?.label+' zone';
+  document.getElementById('cb-hint').textContent=ZONES[f.zone]?.hint||'';
+  const bw=220,bh=75;
+  let left=sx-bw/2,top=sy-bh-18;
+  if(left<8)left=8;if(left+bw>W-8)left=W-bw-8;if(top<8)top=sy+18;
+  callout.style.left=left+'px';callout.style.top=top+'px';
+}
+
+// ── ZONE SELECTION ────────────────────────────────────────────────────────────
+function selectZone(key,btn){
+  activeZone=(key==='all')?null:((activeZone===key)?null:key);
+  selectedFamily=null;callout.style.display='none';
+  document.getElementById('ib-selected').textContent='';
+  document.querySelectorAll('.zone-btn').forEach(b=>b.classList.remove('active'));
+  if(!activeZone)document.getElementById('zbtn-all').classList.add('active');
+  else if(btn)btn.classList.add('active');
+  updateZonePanel();renderMap();
+}
+function selectZoneById(key){
+  activeZone=(activeZone===key)?null:key;
+  selectedFamily=null;callout.style.display='none';
+  document.getElementById('ib-selected').textContent='';
+  document.querySelectorAll('.zone-btn').forEach(b=>b.classList.remove('active'));
+  if(!activeZone)document.getElementById('zbtn-all').classList.add('active');
+  else{const b=document.getElementById('zbtn-'+activeZone);if(b)b.classList.add('active');}
+  updateZonePanel();switchTabById('zones');renderMap();
+}
+function updateZonePanel(){
+  const infoEl=document.getElementById('zone-info'),famEl=document.getElementById('zone-families');
+  if(!activeZone){
+    infoEl.textContent='Select a zone to browse families, or search by name in Names A–Z.';
+    famEl.innerHTML='';return;
+  }
+  const z=ZONES[activeZone],zf=families.filter(f=>f.zone===activeZone);
+  infoEl.textContent=z.label+' — '+z.hint+'. '+zf.length+' grave groups recorded. Click a name to locate.';
+  famEl.innerHTML='';
+  zf.forEach(f=>{
+    const div=document.createElement('div');
+    div.className='family-item'+(f.name===selectedFamily?' active':'');
+    div.textContent=f.name;
+    div.addEventListener('click',()=>selectFamily(f.name));
+    famEl.appendChild(div);
+  });
+}
+
+// ── FAMILY SELECTION ──────────────────────────────────────────────────────────
+function selectFamily(name){
+  if(selectedFamily===name){
+    selectedFamily=null;callout.style.display='none';
+    document.getElementById('ib-selected').textContent='';
+  } else {
+    selectedFamily=name;
+    const f=families.find(fd=>fd.name===name);
+    if(f){
+      activeZone=f.zone;
+      document.querySelectorAll('.zone-btn').forEach(b=>b.classList.remove('active'));
+      const zb=document.getElementById('zbtn-'+f.zone);if(zb)zb.classList.add('active');
+      updateZonePanel();
+      const W=container.clientWidth,H=container.clientHeight;
+      const{x,y}=ll2xy(f.lat,f.lng,W,H);
+      viewState.tx=W/2-x*viewState.scale;viewState.ty=H/2-y*viewState.scale;
+      document.getElementById('ib-selected').textContent='▸ '+name+' · '+ZONES[f.zone]?.label;
+    }
+  }
+  updateNameList();renderMap();
+}
+
+// ── NAME LIST ─────────────────────────────────────────────────────────────────
+function buildNameList(filter=''){
+  const el=document.getElementById('name-list');el.innerHTML='';
+  const fl=filter.toLowerCase();
+  const filtered=families.filter(f=>f.name.toLowerCase().includes(fl));
+  if(!filtered.length){
+    el.innerHTML='<div style="padding:8px 10px;font-size:0.71rem;color:var(--faded)">No matches found.</div>';
+    return;
+  }
+  filtered.forEach(f=>{
+    const div=document.createElement('div');
+    div.className='name-item'+(f.name===selectedFamily?' active':'');
+    const ns=document.createElement('span');ns.textContent=f.name;
+    const tag=document.createElement('span');tag.className='zone-tag';
+    tag.textContent=ZONES[f.zone]?.label.replace('North-','N·').replace('South-','S·')||'';
+    tag.style.background=ZONES[f.zone]?.color||'#888';
+    div.appendChild(ns);div.appendChild(tag);
+    div.addEventListener('click',()=>{selectFamily(f.name);switchTabById('zones');});
+    el.appendChild(div);
+  });
+}
+function updateNameList(){buildNameList(document.getElementById('name-search').value);}
+function filterNames(v){buildNameList(v);}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');document.getElementById('tab-'+name).classList.add('active');
+}
+function switchTabById(name){
+  const names=['zones','names','legend'],btns=[...document.querySelectorAll('.tab-btn')];
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const i=names.indexOf(name);if(i>=0)btns[i].classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+// ── ZOOM / PAN ────────────────────────────────────────────────────────────────
+function zoom(f){viewState.scale=Math.max(0.3,Math.min(16,viewState.scale*f));renderMap();}
+function resetView(){
+  viewState={scale:1,tx:0,ty:0};selectedFamily=null;activeZone=null;
+  callout.style.display='none';document.getElementById('ib-selected').textContent='';
+  document.querySelectorAll('.zone-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('zbtn-all').classList.add('active');
+  updateZonePanel();renderMap();
+}
+container.addEventListener('mousedown',e=>{dragging=true;lastMouse={x:e.clientX,y:e.clientY};container.style.cursor='grabbing';});
+window.addEventListener('mousemove',e=>{if(!dragging)return;viewState.tx+=e.clientX-lastMouse.x;viewState.ty+=e.clientY-lastMouse.y;lastMouse={x:e.clientX,y:e.clientY};renderMap();});
+window.addEventListener('mouseup',()=>{dragging=false;container.style.cursor='crosshair';});
+container.addEventListener('wheel',e=>{e.preventDefault();zoom(e.deltaY<0?1.12:0.89);},{passive:false});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('ib-total').textContent=families.length;
+document.getElementById('zbtn-all').classList.add('active');
+buildNameList();
+
+// Auto-collapse sidebar on small screens
+if(window.innerWidth <= 540){
+  sidebarOpen=false;
+  document.getElementById('sidebar').classList.add('collapsed');
+}
+
+window.addEventListener('resize',()=>{
+  // Re-collapse if resized to phone width
+  if(window.innerWidth<=540 && sidebarOpen){
+    sidebarOpen=false;
+    document.getElementById('sidebar').classList.add('collapsed');
+  }
+  renderMap();
+});
+renderMap();
+</script>
+</body>
+</html>
