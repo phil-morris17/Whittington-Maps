@@ -243,6 +243,39 @@ svg#map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
   /* Back link text shorter */
   .back-link-full { display: none; }
   .back-link-short { display: inline; }
+
+  /* Toggle button more prominent on phone */
+  .toggle-btn {
+    width: 40px; height: 40px;
+    font-size: 1.2rem;
+    background: #3a2a18;
+    border-color: var(--faded);
+    color: var(--parchment);
+  }
+}
+
+/* Floating open-panel hint shown on phone when sidebar is closed */
+.open-hint {
+  display: none;
+}
+@media (max-width: 540px) {
+  .open-hint {
+    display: block;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: rgba(26,18,8,0.92);
+    border: 1px solid var(--faded);
+    border-radius: 4px;
+    color: var(--parchment);
+    font-family: 'Inconsolata', monospace;
+    font-size: 0.7rem;
+    padding: 6px 10px;
+    z-index: 90;
+    pointer-events: none;
+    letter-spacing: 0.04em;
+  }
+  .open-hint.hidden { display: none; }
 }
 
 @media (min-width: 541px) {
@@ -344,6 +377,7 @@ svg#map { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
   <!-- MAP -->
   <div class="map-container" id="map-container">
     <svg id="map" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="open-hint" id="open-hint">☰ Tap to search names &amp; zones</div>
     <div class="callout-bubble" id="callout">
       <div class="cb-name" id="cb-name"></div>
       <div class="cb-zone" id="cb-zone"></div>
@@ -560,7 +594,13 @@ function applyTransform(){
   const g=svg.querySelector('g.tg');
   if(g)g.setAttribute('transform',`translate(${viewState.tx},${viewState.ty}) scale(${viewState.scale})`);
 }
-function toggleSidebar(){sidebarOpen=!sidebarOpen;sidebar.classList.toggle('collapsed',!sidebarOpen);setTimeout(renderMap,270);}
+function toggleSidebar(){
+  sidebarOpen=!sidebarOpen;
+  sidebar.classList.toggle('collapsed',!sidebarOpen);
+  const hint=document.getElementById('open-hint');
+  if(hint) hint.classList.toggle('hidden', sidebarOpen);
+  setTimeout(renderMap,270);
+}
 
 function svgEl(tag,attrs){
   const e=document.createElementNS('http://www.w3.org/2000/svg',tag);
@@ -643,19 +683,28 @@ function renderMap(){
   }
   tg.appendChild(zoneG);
 
-  // Zone labels — outside clip so they sit over the boundary line nicely
+  // Zone labels — positioned at zone centres, font scaled to screen width
+  // No clip — labels sit at geometric centre of each zone rectangle
+  const labelFontSize = Math.max(7, Math.min(11, W / 55));
   for(const [key,z] of Object.entries(ZONES)){
     const tl=ll2xy(z.maxLat,z.minLng,W,H);
     const br=ll2xy(z.minLat,z.maxLng,W,H);
     const isActive=activeZone===null||activeZone===key;
-    // Clip label x to stay inside boundary roughly
-    const cx=Math.max(tl.x+20,Math.min(br.x-20,(tl.x+br.x)/2));
+    // Centre of zone rectangle
+    const cx=(tl.x+br.x)/2;
     const cy=(tl.y+br.y)/2;
-    tg.appendChild(svgTxt(z.label,{
-      x:cx,y:cy+4,'text-anchor':'middle',
-      'font-family':'IM Fell English, serif','font-size':11,'font-style':'italic',
-      fill:isActive?z.stroke:'rgba(70,55,35,0.4)','pointer-events':'none'
-    }));
+    // Only draw if centre is reasonably inside the map area
+    if(cx>0&&cx<W&&cy>0&&cy<H){
+      tg.appendChild(svgTxt(z.label,{
+        x:cx,y:cy+labelFontSize/3,
+        'text-anchor':'middle',
+        'font-family':'IM Fell English, serif',
+        'font-size':labelFontSize,
+        'font-style':'italic',
+        fill:isActive?z.stroke:'rgba(70,55,35,0.4)',
+        'pointer-events':'none'
+      }));
+    }
   }
 
   // ── Boundary polygon outline ───────────────────────────────────────────────
@@ -921,6 +970,8 @@ buildNameList();
 if(window.innerWidth <= 540){
   sidebarOpen=false;
   document.getElementById('sidebar').classList.add('collapsed');
+  const hint=document.getElementById('open-hint');
+  if(hint) hint.classList.remove('hidden');
 }
 
 window.addEventListener('resize',()=>{
