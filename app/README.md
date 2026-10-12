@@ -43,3 +43,9 @@ If you change any file, open `sw.js` and change `wt-v1` to `wt-v2` (and so on). 
 ## Churchyard area outlines
 
 `areas.json` holds the surveyed outline of each named section (South Door, BGS, Croft and so on), tidied so neighbouring sections share an edge instead of overlapping. The survey tool draws them on its plan and tells you which section each reading falls in. The same outlines are in `data/churchyard-areas.geojson` (for QGIS or the churchyard map) and `data/churchyard-areas.swift`. West Door is not yet surveyed.
+
+## Measured ground plan (oldest burial ground)
+
+`groundplan.json` is the tape-measured plan from spring 2026: boundary points A–J, zones A–F (South & South Door), F–H (Old Burial Ground) and H–J (Old Burial Ground 2), the church (84 × 60 ft nave, 18 × 24 ft chancel, 22 ft path), boundary trees T1–T8 and CF1–CF6, the two Norman-aisle firs, and the 10 ft grid (columns B–AC, rows 2–17). The survey tool draws it and gives every reading inside it a grid reference such as `M5`, saved in the CSV's **Grid ref** column to match the GraveRegister. `data/churchyard-ground-plan.geojson` has the same layers plus every grid square as its own polygon.
+
+The plan is placed using GPS point A. On that placement the firs land within about 2 m of their separate GPS readings, but the plan's south wall (B–C) sits about 10 m inside the GPS south wall. Check A–B (27 ft) and the A–F line against the canes before relying on rows 12–17.

@@ -150,7 +150,7 @@ ul.recs button.confirm{border-color:var(--bad);color:var(--bad);font-weight:700}
   <div class="plot" id="plot"></div>
   <div class="keyrow" id="key"></div>
   <div class="btns"><button class="btn quiet" id="zoom" aria-pressed="false">Zoom to my points</button></div>
-  <p class="hint">Faint outlines are the surveyed areas, labelled with their codes; the dashed line is the whole churchyard and the grey block is the church (approximate). Points in the same section are joined in number order, so record corners walking round the section clockwise.</p>
+  <p class="hint">Faint outlines are the surveyed areas, labelled with their codes; the dashed line is the whole churchyard. The purple outline, dotted dividers, trees and church come from the measured ground plan (zones A–F, F–H, H–J); zoom in to see its 10 ft grid squares. Readings inside it are given a grid reference. Points in the same section are joined in number order, so record corners walking round the section clockwise.</p>
 </section>
 
 <section class="card" aria-labelledby="h-recs">
@@ -198,6 +198,22 @@ fetch("areas.json").then(r=>r.ok?r.json():null).then(j=>{ if(!j) return;
 function inside(p,ring){let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const a=ring[i],b=ring[j];
   if(((a.lat>p.lat)!==(b.lat>p.lat))&&(p.lng<(b.lng-a.lng)*(p.lat-a.lat)/(b.lat-a.lat)+a.lng))c=!c}return c}
 function sectionAt(p){return SECTIONS.find(s=>inside(p,s.ring))}
+/* Measured ground plan of the oldest burial ground (groundplan.json): church, zones, trees, 10 ft grid. */
+let GP=null;
+fetch("groundplan.json").then(r=>r.ok?r.json():null).then(j=>{ if(!j) return;
+  const R=a=>a.map(([lat,lng])=>({lat,lng}));
+  GP={...j, boundaryR:R(j.boundary), churchR:R(j.church), zonesR:j.zones.map(z=>({...z,ringR:R(z.ring)})),
+      treesR:[...j.trees,...j.firs].map(([n,[lat,lng]])=>({n,lat,lng})), pts:Object.fromEntries(Object.entries(j.points).map(([k,[lat,lng]])=>[k,{lat,lng}]))};
+  drawPlot(); }).catch(()=>{});
+function colName(i){let s="";i+=1;while(i>0){const r=(i-1)%26;s=String.fromCharCode(65+r)+s;i=Math.floor((i-1)/26)}return s}
+function planUV(p){const x=(p.lng-GP.origin[1])*GP.metresPerDegLng, y=(p.lat-GP.origin[0])*GP.metresPerDegLat;
+  return {u:x*GP.east[0]+y*GP.east[1], v:x*GP.south[0]+y*GP.south[1]}}
+function planLL(u,v){const x=u*GP.east[0]+v*GP.south[0], y=u*GP.east[1]+v*GP.south[1];
+  return {lat:GP.origin[0]+y/GP.metresPerDegLat, lng:GP.origin[1]+x/GP.metresPerDegLng}}
+const CELL=3.048;
+function gridAt(p){ if(!GP||!inside(p,GP.boundaryR)) return null;
+  const {u,v}=planUV(p); const z=GP.zonesR.find(z=>inside(p,z.ringR));
+  return {ref:colName(Math.floor(u/CELL)+3)+(Math.floor(v/CELL)+2), zone:z?`${z.code} ${z.name}`:""}}
 
 /* ---------- STATE ---------- */
 const $=id=>document.getElementById(id);
@@ -249,7 +265,7 @@ async function capture(){
     if(!samples.length){$("status").textContent="No reading taken. Try again in the open.";return}
     fix=average(samples); show(fix);
     const [q]=quality(fix.acc); const sec=sectionAt(fix);
-    $("status").textContent=`Reading ready: ${fix.n} sample${fix.n===1?"":"s"} averaged, ${q.toLowerCase()} accuracy. ${sec?`It falls inside ${sec.name} (Area ${sec.area}).`:"It falls outside the surveyed areas."} Check the plan below, then save.`;
+    $("status").textContent=`Reading ready: ${fix.n} sample${fix.n===1?"":"s"} averaged, ${q.toLowerCase()} accuracy. ${sec?`It falls inside ${sec.name} (Area ${sec.area}).`:"It falls outside the surveyed areas."}${(g=>g?` Grid square ${g.ref}${g.zone?", zone "+g.zone:""}.`:"")(gridAt(fix))} Check the plan below, then save.`;
     $("save").disabled=false; drawPlot();
   }
   capture.finish=finish;
@@ -273,7 +289,7 @@ $("save").addEventListener("click",()=>{
     area: area?"Area "+area.n:"", section: mode==="area"?subLabel($("sub").value):mode==="stop"?$("stop").selectedOptions[0].text.replace(/^\d+\.\s*/,""):$("refname").value.trim(),
     ptype: mode==="area"?$("ptype").value:mode==="stop"?"Trail stop":$("reftype").value,
     seq: mode==="stop"?1:(+$("seq").value||1), lat:+fix.lat.toFixed(7), lng:+fix.lng.toFixed(7), acc:+fix.acc.toFixed(1), n:fix.n,
-    by:($("who").value||"").toUpperCase(), at:new Date().toISOString(), photo:$("photo").value.trim(), notes:$("notes").value.trim()};
+    by:($("who").value||"").toUpperCase(), at:new Date().toISOString(), photo:$("photo").value.trim(), notes:$("notes").value.trim(), grid:(gridAt(fix)||{}).ref||""};
   if(mode==="stop") records=records.filter(r=>r.id!==rec.id);
   records.push(rec);
   if(!ls.set("records",records)) $("status").textContent="Saved for now, but this browser won't keep it. Export before closing.";
@@ -289,7 +305,8 @@ function colorFor(r){if(r.kind==="area")return AREA_COLOR(+r.area.replace(/\D/g,
 function drawPlot(){
   const OUTLINE=WHOLE||BOUNDARY.map(([lat,lng])=>({lat,lng}));
   const mine=records.filter(r=>r.kind!=="stop").map(r=>({lat:r.lat,lng:r.lng})); if(fix)mine.push(fix);
-  let pts=zoomMine&&mine.length?mine.slice():[...OUTLINE,{lat:CHURCH.minLat,lng:CHURCH.minLng},{lat:CHURCH.maxLat,lng:CHURCH.maxLng},...mine];
+  const CH=GP?GP.churchR:[{lat:CHURCH.minLat,lng:CHURCH.minLng},{lat:CHURCH.maxLat,lng:CHURCH.minLng},{lat:CHURCH.maxLat,lng:CHURCH.maxLng},{lat:CHURCH.minLat,lng:CHURCH.maxLng}];
+  let pts=zoomMine&&mine.length?mine.slice():[...OUTLINE,...CH,...mine];
   if(zoomMine&&mine.length){const c=mine[0];pts.push({lat:c.lat+0.00012,lng:c.lng+0.0002},{lat:c.lat-0.00012,lng:c.lng-0.0002})}
   const lat0=53.2727,k=Math.cos(lat0*Math.PI/180);
   const m=p=>({x:(p.lng+1.4252)*k*111320,y:-(p.lat-lat0)*110540});
@@ -302,7 +319,19 @@ function drawPlot(){
   const bd=poly(OUTLINE);
   const secs=SECTIONS.map(s=>{const c=AREA_COLOR(s.area);const cx=s.ring.reduce((a,p)=>a+T(p)[0],0)/s.ring.length, cy=s.ring.reduce((a,p)=>a+T(p)[1],0)/s.ring.length;
     return `<polygon points="${poly(s.ring)}" fill="${c}" fill-opacity=".07" stroke="${c}" stroke-opacity=".55" stroke-width="1"/><text x="${cx.toFixed(1)}" y="${(cy+3).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="${c}" font-family="var(--f-data)">${s.code}</text>`}).join("");
-  const [cx1,cy1]=T({lat:CHURCH.maxLat,lng:CHURCH.minLng}), [cx2,cy2]=T({lat:CHURCH.minLat,lng:CHURCH.maxLng});
+  const chc=CH.reduce((a,p)=>{const t=T(p);return [a[0]+t[0]/CH.length,a[1]+t[1]/CH.length]},[0,0]);
+  let planLayer="";
+  if(GP){
+    const ln=(a,b)=>{const [x1,y1]=T(GP.pts[a]),[x2,y2]=T(GP.pts[b]);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--a1)" stroke-width="1" stroke-dasharray="3 3"/>`};
+    let grid="";
+    if(zoomMine||sc>4){ for(let i=-3;i<30;i++)for(let r=0;r<20;r++){const q=[planLL(i*CELL,r*CELL),planLL((i+1)*CELL,r*CELL),planLL((i+1)*CELL,(r+1)*CELL),planLL(i*CELL,(r+1)*CELL)];
+        const mid=planLL((i+.5)*CELL,(r+.5)*CELL); if(!inside(mid,GP.boundaryR))continue;
+        grid+=`<polygon points="${poly(q)}" fill="none" stroke="var(--rule)" stroke-width=".6"/>`;
+        if(sc>9){const [x,y]=T(mid);grid+=`<text x="${x.toFixed(1)}" y="${(y+3).toFixed(1)}" text-anchor="middle" font-size="7" fill="var(--muted)" font-family="var(--f-data)">${colName(i+3)}${r+2}</text>`}}}
+    const trees=GP.treesR.map(t=>{const [x,y]=T(t);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${/^Fir/.test(t.n)?4:3}" fill="#3f7a3a" fill-opacity=".85"><title>${t.n}</title></circle>`}).join("");
+    const labels=["A","B","C","E","F","H","J"].map(k=>{const [x,y]=T(GP.pts[k]);return `<text x="${(x+4).toFixed(1)}" y="${(y-4).toFixed(1)}" font-size="10" font-weight="700" fill="var(--a1)" font-family="var(--f-body)">${k}</text>`}).join("");
+    planLayer=`${grid}<polygon points="${poly(GP.boundaryR)}" fill="none" stroke="var(--a1)" stroke-width="1.3"/>${ln("F","C")}${ln("H","C")}${trees}${labels}`;
+  }
   const groups={}; records.filter(r=>r.kind==="area").forEach(r=>(groups[r.group]=groups[r.group]||[]).push(r));
   const shapes=Object.values(groups).map(g=>{g.sort((a,b)=>a.seq-b.seq);const c=colorFor(g[0]);
     if(g.length<2)return"";const pl=poly(g);return g.length>=3?`<polygon points="${pl}" fill="${c}" fill-opacity=".14" stroke="${c}" stroke-width="2"/>`:`<polyline points="${pl}" fill="none" stroke="${c}" stroke-width="2"/>`}).join("");
@@ -312,9 +341,10 @@ function drawPlot(){
   $("plot").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Plan of recorded survey points">
    <rect width="${W}" height="${H}" fill="var(--surface)"/>
    <polygon points="${bd}" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 3"/>
-   <rect x="${cx1}" y="${cy1}" width="${cx2-cx1}" height="${cy2-cy1}" fill="var(--rule)" stroke="var(--muted)" stroke-width="1"/>
-   <text x="${(cx1+cx2)/2}" y="${(cy1+cy2)/2+4}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">Church</text>
-   ${secs}${shapes}${dots}${cur}
+   ${secs}
+   <polygon points="${poly(CH)}" fill="var(--rule)" stroke="var(--muted)" stroke-width="1"/>
+   <text x="${chc[0].toFixed(1)}" y="${(chc[1]+4).toFixed(1)}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">Church</text>
+   ${planLayer}${shapes}${dots}${cur}
    <g transform="translate(14 ${H-14})"><line x1="0" y1="0" x2="${tenM}" y2="0" stroke="var(--ink)" stroke-width="2"/><text x="0" y="-5" font-size="10" fill="var(--muted)" font-family="var(--f-data)">${barM} m</text></g>
    <text x="${W-12}" y="20" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--f-data)">N ↑</text></svg>`;
   $("key").innerHTML=AREAS.map(a=>`<span><i style="background:${AREA_COLOR(a.n)}"></i>Area ${a.n}</span>`).join("")+`<span><i style="background:var(--ref)"></i>Landmark</span><span><i style="background:#2f6fd6"></i>Current reading</span>`;
@@ -326,7 +356,7 @@ function listRecs(){
   if(!records.length){$("recs").innerHTML=`<li><span class="rmeta">No points yet. Your first saved reading will appear here and on the plan.</span></li>`;return}
   const seen={};records.forEach(r=>{if(r.kind!=="stop")seen[r.id]=(seen[r.id]||0)+1});
   $("recs").innerHTML=[...records].reverse().map(r=>`<li><span><span class="rid">${r.id}</span>${seen[r.id]>1?' <span class="chip q-poor">Same number used twice</span>':""} · ${r.section} · ${r.ptype}</span>
-   <span class="rmeta">${r.lat.toFixed(6)}, ${r.lng.toFixed(6)} · ±${r.acc} m · ${r.by||"—"} · ${new Date(r.at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+   <span class="rmeta">${r.grid?"Grid "+r.grid+" · ":""}${r.lat.toFixed(6)}, ${r.lng.toFixed(6)} · ±${r.acc} m · ${r.by||"—"} · ${new Date(r.at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
    <button data-del="${r.key}">Delete</button></li>`).join("");
 }
 $("recs").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(!b)return;
@@ -334,7 +364,7 @@ $("recs").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if
   records=records.filter(r=>r.key!==b.dataset.del);ls.set("records",records);listRecs();drawPlot();refreshWhat(true)});
 
 /* ---------- EXPORT / IMPORT ---------- */
-const COLS=[["Point ID","id"],["Type","kind"],["Area","area"],["Section","section"],["Point type","ptype"],["Sequence","seq"],["Latitude","lat"],["Longitude","lng"],["Accuracy (m)","acc"],["Samples","n"],["Recorded by","by"],["Recorded at","at"],["Photo","photo"],["Notes","notes"],["Group","group"],["Record key","key"]];
+const COLS=[["Point ID","id"],["Type","kind"],["Area","area"],["Section","section"],["Point type","ptype"],["Grid ref","grid"],["Sequence","seq"],["Latitude","lat"],["Longitude","lng"],["Accuracy (m)","acc"],["Samples","n"],["Recorded by","by"],["Recorded at","at"],["Photo","photo"],["Notes","notes"],["Group","group"],["Record key","key"]];
 const KIND_LABEL={area:"Churchyard area",stop:"Trail stop",ref:"Landmark"}, KIND_BACK={"Churchyard area":"area","Trail stop":"stop","Landmark":"ref"};
 const q=v=>{v=v==null?"":String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
 function toCSV(){return [COLS.map(c=>c[0]).join(","),...records.map(r=>COLS.map(([,k])=>q(k==="kind"?KIND_LABEL[r.kind]:r[k])).join(","))].join("\r\n")}
