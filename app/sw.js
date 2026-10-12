@@ -1,6 +1,6 @@
 // Whittington Trail offline cache. Bump VERSION whenever any app file changes.
-const VERSION = "wt-v1";
-const SHELL = ["./", "index.html", "recorder.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
+const VERSION = "wt-v2";
+const SHELL = ["./", "index.html", "recorder.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "areas.json"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

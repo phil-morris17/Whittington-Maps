@@ -39,3 +39,7 @@ The app picks the positions up automatically. "You are here" and distances then 
 ## Updating the app later
 
 If you change any file, open `sw.js` and change `wt-v1` to `wt-v2` (and so on). Otherwise phones keep showing the cached copy.
+
+## Churchyard area outlines
+
+`areas.json` holds the surveyed outline of each named section (South Door, BGS, Croft and so on), tidied so neighbouring sections share an edge instead of overlapping. The survey tool draws them on its plan and tells you which section each reading falls in. The same outlines are in `data/churchyard-areas.geojson` (for QGIS or the churchyard map) and `data/churchyard-areas.swift`. West Door is not yet surveyed.
