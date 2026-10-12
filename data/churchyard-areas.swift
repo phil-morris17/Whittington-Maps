@@ -1,6 +1,6 @@
 // St Bartholomew's churchyard, Old Whittington — area outlines (updated 12 Oct 2026)
 // Each ring is closed (last point repeats the first) and runs clockwise from its northernmost point.
-// BGS extended to East End in line with NBGS. West Door (Area 1) not yet surveyed.
+// BGS extended to East End in line with NBGS; 4 ft path along the inner side of West Side. West Door (Area 1) not yet surveyed.
 
 import CoreLocation
 
@@ -13,7 +13,6 @@ struct ChurchyardArea {
 }
 
 private func c(_ lat: Double, _ lng: Double) -> CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: lat, longitude: lng) }
-
 let churchyardAreas: [ChurchyardArea] = [
     ChurchyardArea(code: "SD", area: 1, name: "South Door", opened: "12th century", outline: [
         c(53.2728464, -1.4251541),
@@ -42,7 +41,8 @@ let churchyardAreas: [ChurchyardArea] = [
     ]),
     ChurchyardArea(code: "WE", area: 2, name: "West End", opened: "1863", outline: [
         c(53.2730508, -1.4252595),
-        c(53.2730420, -1.4251375),
+        c(53.2730443, -1.4251689),
+        c(53.2730350, -1.4251407),
         c(53.2728550, -1.4252221),
         c(53.2727878, -1.4253621),
         c(53.2727710, -1.4255320),
@@ -63,11 +63,12 @@ let churchyardAreas: [ChurchyardArea] = [
         c(53.2737112, -1.4243416)
     ]),
     ChurchyardArea(code: "WP", area: 2, name: "West Path", opened: "1863", outline: [
-        c(53.2732173, -1.4248840),
+        c(53.2732121, -1.4248588),
         c(53.2732040, -1.4248198),
         c(53.2730711, -1.4248996),
         c(53.2730773, -1.4250278),
-        c(53.2732173, -1.4248840)
+        c(53.2731367, -1.4249668),
+        c(53.2732121, -1.4248588)
     ]),
     ChurchyardArea(code: "EE", area: 2, name: "East End", opened: "1863", outline: [
         c(53.2732672, -1.4245168),
@@ -82,8 +83,11 @@ let churchyardAreas: [ChurchyardArea] = [
         c(53.2730551, -1.4246332),
         c(53.2730515, -1.4249114),
         c(53.2732055, -1.4248188),
-        c(53.2732257, -1.4248852),
-        c(53.2733260, -1.4247115),
+        c(53.2732160, -1.4248532),
+        c(53.2732246, -1.4248409),
+        c(53.2732285, -1.4248539),
+        c(53.2732902, -1.4247470),
+        c(53.2733262, -1.4246954),
         c(53.2733287, -1.4244831)
     ]),
     ChurchyardArea(code: "OP", area: 2, name: "Old Path", opened: "1863", outline: [
@@ -104,9 +108,11 @@ let churchyardAreas: [ChurchyardArea] = [
         c(53.2735201, -1.4243065),
         c(53.2735325, -1.4243022),
         c(53.2735541, -1.4243267),
-        c(53.2733450, -1.4246687),
-        c(53.2733382, -1.4246464),
-        c(53.2733528, -1.4247230),
+        c(53.2733460, -1.4246671),
+        c(53.2733521, -1.4246584),
+        c(53.2733574, -1.4246866),
+        c(53.2734366, -1.4245374),
+        c(53.2734977, -1.4244500),
         c(53.2736621, -1.4241403)
     ]),
     ChurchyardArea(code: "MP", area: 2, name: "Middle Path", opened: "1863", outline: [
