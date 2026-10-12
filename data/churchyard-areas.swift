@@ -1,6 +1,6 @@
-// St Bartholomew's churchyard, Old Whittington — area outlines (tidied 12 Oct 2026)
+// St Bartholomew's churchyard, Old Whittington — area outlines (updated 12 Oct 2026)
 // Each ring is closed (last point repeats the first) and runs clockwise from its northernmost point.
-// West Door (Area 1) is not yet surveyed.
+// BGS extended to East End in line with NBGS. West Door (Area 1) not yet surveyed.
 
 import CoreLocation
 
@@ -117,12 +117,14 @@ let churchyardAreas: [ChurchyardArea] = [
         c(53.2736372, -1.4241729)
     ]),
     ChurchyardArea(code: "BGS", area: 3, name: "BGS (Burial Ground South)", opened: "c. 1890", outline: [
-        c(53.2736544, -1.4241434),
-        c(53.2735293, -1.4234096),
-        c(53.2729705, -1.4236217),
-        c(53.2732925, -1.4242767),
-        c(53.2734181, -1.4242389),
-        c(53.2736544, -1.4241434)
+        c(53.2736546, -1.4241427),
+        c(53.2735297, -1.4234096),
+        c(53.2729892, -1.4236122),
+        c(53.2728309, -1.4244646),
+        c(53.2732332, -1.4243245),
+        c(53.2732330, -1.4242944),
+        c(53.2734198, -1.4242382),
+        c(53.2736546, -1.4241427)
     ]),
     ChurchyardArea(code: "OO", area: 4, name: "Old Ord", opened: "1913", outline: [
         c(53.2740281, -1.4238547),

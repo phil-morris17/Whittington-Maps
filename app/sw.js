@@ -1,5 +1,5 @@
 // Whittington Trail offline cache. Bump VERSION whenever any app file changes.
-const VERSION = "wt-v3";
+const VERSION = "wt-v4";
 const SHELL = ["./", "index.html", "recorder.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png", "areas.json", "groundplan.json"];
 
 self.addEventListener("install", e => {
