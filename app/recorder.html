@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Churchyard Survey</title>
+<meta name="theme-color" content="#1c4a48">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IM+Fell+English&family=Inconsolata:wght@500;700&display=swap">
+<style>
+/* Layout: single field column for one-handed use outdoors — what, reading, notes, save; plot, records and export follow below. */
+:root{
+  --paper:#eef1ec; --surface:#ffffff; --ink:#1b2426; --muted:#56635f; --rule:#cfd8d2;
+  --accent:#1c6b66; --accent-soft:#dbe9e5; --on-accent:#ffffff;
+  --good:#2c7a45; --warn:#9a6a12; --bad:#a3402e;
+  --a1:#7b5aa6; --a2:#1c6b66; --a3:#b0612c; --a4:#3b6fb0; --a5:#a3402e; --a6:#5f7d2a; --a7:#9a6a12; --ref:#56635f;
+  --f-display:"IM Fell English", Georgia, serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-data:"Inconsolata", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111718; --surface:#192123; --ink:#e5ebe8; --muted:#9caaa6; --rule:#2c3739;
+  --accent:#6bbcb2; --accent-soft:#1d3634; --on-accent:#0c1414; --good:#74c78d; --warn:#e2b45a; --bad:#e8907a;
+  --a1:#b29ae0; --a2:#6bbcb2; --a3:#e3965e; --a4:#82abe6; --a5:#e8907a; --a6:#a6c86a; --a7:#e2b45a; --ref:#9caaa6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111718; --surface:#192123; --ink:#e5ebe8; --muted:#9caaa6; --rule:#2c3739;
+  --accent:#6bbcb2; --accent-soft:#1d3634; --on-accent:#0c1414; --good:#74c78d; --warn:#e2b45a; --bad:#e8907a;
+  --a1:#b29ae0; --a2:#6bbcb2; --a3:#e3965e; --a4:#82abe6; --a5:#e8907a; --a6:#a6c86a; --a7:#e2b45a; --ref:#9caaa6; color-scheme:dark}
+
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:1.5}
+.wrap{max-width:40rem;margin:0 auto;padding-inline:16px;padding-block:14px 48px;display:flex;flex-direction:column;gap:18px}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:400;font-size:2rem;line-height:1.05;margin:0}
+h1 small{display:block;font-family:var(--f-body);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.who{display:flex;flex-direction:row;align-items:center;gap:8px;font-size:.95rem;color:var(--muted)}
+.who input{width:5.5rem;text-transform:uppercase}
+h2{font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;font-weight:700}
+section.card{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-weight:700;font-size:.95rem;min-width:0}
+input,select,textarea{background:var(--paper);border:1.5px solid var(--rule);border-radius:8px;padding:10px 12px;min-height:46px;width:100%;box-sizing:border-box;font-weight:400}
+textarea{min-height:70px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:420px){.row{grid-template-columns:1fr}}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--accent);border-radius:10px;overflow:hidden}
+.seg button{background:none;border:0;padding:10px 4px;min-height:46px;font-weight:700;color:var(--accent);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--accent)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+.hint{margin:0;color:var(--muted);font-size:.95rem}
+.pid{font-family:var(--f-data);font-size:1.25rem;font-weight:700;letter-spacing:.02em}
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;border:0;background:var(--accent);color:var(--on-accent);padding:12px 18px;border-radius:999px;font-weight:700;cursor:pointer;min-height:48px}
+.btn.big{font-size:1.15rem;padding:16px;border-radius:12px;width:100%}
+.btn.quiet{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn.danger{background:var(--bad);color:var(--paper)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.fix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-family:var(--f-data);font-variant-numeric:tabular-nums}
+.fix div{background:var(--paper);border-radius:8px;padding:8px 10px;min-width:0}
+.fix span{display:block;font-family:var(--f-body);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fix b{font-size:.98rem;white-space:nowrap}
+.meter{height:8px;background:var(--paper);border-radius:4px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s linear}
+.chip{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:700;font-size:.85rem;border:1.5px solid currentColor}
+.q-good{color:var(--good)} .q-ok{color:var(--warn)} .q-poor{color:var(--bad)}
+.plot{border:1px solid var(--rule);border-radius:12px;overflow:hidden;background:var(--surface)}
+.plot svg{display:block;width:100%;height:auto}
+.keyrow{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.88rem;color:var(--muted)}
+.keyrow span{display:inline-flex;align-items:center;gap:6px}
+.keyrow i{width:10px;height:10px;border-radius:50%;display:inline-block}
+ul.recs{list-style:none;margin:0;padding:0}
+ul.recs li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center}
+ul.recs .rid{font-family:var(--f-data);font-weight:700}
+ul.recs .rmeta{grid-column:1;color:var(--muted);font-size:.9rem;font-family:var(--f-data);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+ul.recs button{grid-row:1 / span 2;grid-column:2;background:none;border:1.5px solid var(--rule);border-radius:8px;padding:6px 10px;cursor:pointer;color:var(--muted);min-height:40px}
+ul.recs button.confirm{border-color:var(--bad);color:var(--bad);font-weight:700}
+.status{margin:0;font-weight:700}
+.banner{background:var(--accent-soft);border-radius:10px;padding:10px 12px;margin:0;font-size:.95rem}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+<header>
+  <h1><small>St Bartholomew's · Old Whittington</small>Churchyard Survey</h1>
+  <label class="who" for="who">Recorder <input id="who" maxlength="4" placeholder="Initials" autocomplete="off"></label>
+</header>
+
+<p class="banner" id="banner">Readings are kept on this phone until you export them. Export at the end of each session.</p>
+
+<section class="card" aria-labelledby="h-what">
+  <h2 id="h-what">1 · What are you recording?</h2>
+  <div class="seg" role="group" aria-label="Recording type">
+    <button id="m-area" data-mode="area" aria-pressed="true">Churchyard area</button>
+    <button id="m-stop" data-mode="stop" aria-pressed="false">Trail stop</button>
+    <button id="m-ref" data-mode="ref" aria-pressed="false">Landmark</button>
+  </div>
+  <div id="what-area">
+    <div class="row">
+      <label for="sub">Area or section<select id="sub"></select></label>
+      <label for="ptype">Point type<select id="ptype">
+        <option>Corner</option><option>Along boundary</option><option>Path edge</option><option>Gate or entrance</option><option>Wall or hedge line</option><option>Other</option></select></label>
+    </div>
+    <p class="hint" id="subhint"></p>
+  </div>
+  <div id="what-stop" hidden>
+    <label for="stop">Trail stop<select id="stop"></select></label>
+    <p class="hint">Stand at the spot a visitor would stop to look, usually the pavement in front of the building.</p>
+  </div>
+  <div id="what-ref" hidden>
+    <div class="row">
+      <label for="refname">Landmark name<input id="refname" placeholder="e.g. Lych Gate, tower SW corner" autocomplete="off"></label>
+      <label for="reftype">Kind<select id="reftype"><option>Gate</option><option>Building corner</option><option>Path junction</option><option>Tree</option><option>Bench or fixture</option><option>Other</option></select></label>
+    </div>
+    <p class="hint">Fixed landmarks let us check and correct GPS drift later. Record each one on more than one visit if you can.</p>
+  </div>
+  <div class="row">
+    <label for="seq">Point number<input id="seq" type="number" min="1" inputmode="numeric"></label>
+    <div style="display:flex;flex-direction:column;gap:4px;justify-content:flex-end"><span class="hint">This point will be saved as</span><span class="pid" id="pid">—</span></div>
+  </div>
+</section>
+
+<section class="card" aria-labelledby="h-fix">
+  <h2 id="h-fix">2 · Take a reading</h2>
+  <p class="hint">Stand still on the point, hold the phone level at chest height, and keep it there until the reading finishes (about 20 seconds). Several readings are averaged to steady the GPS.</p>
+  <button class="btn big" id="go">Take reading</button>
+  <div class="meter" aria-hidden="true"><i id="bar"></i></div>
+  <div class="fix" aria-live="polite">
+    <div><span>Latitude</span><b id="f-lat">—</b></div>
+    <div><span>Longitude</span><b id="f-lng">—</b></div>
+    <div><span>Accuracy</span><b id="f-acc">—</b></div>
+  </div>
+  <p class="status" id="status"></p>
+</section>
+
+<section class="card" aria-labelledby="h-notes">
+  <h2 id="h-notes">3 · Notes and save</h2>
+  <div class="row">
+    <label for="photo">Photo number<input id="photo" placeholder="e.g. IMG_4521" autocomplete="off"></label>
+    <label for="notes">Notes<textarea id="notes" placeholder="What marks this point? Any doubt about it?"></textarea></label>
+  </div>
+  <button class="btn big" id="save" disabled>Save point</button>
+</section>
+
+<section aria-labelledby="h-plot" style="display:flex;flex-direction:column;gap:10px">
+  <h2 id="h-plot">Plan of points recorded</h2>
+  <div class="plot" id="plot"></div>
+  <div class="keyrow" id="key"></div>
+  <p class="hint">Grey outline: the Phase 1 survey boundary and the present church. Points in the same section are joined in number order, so record corners walking round the section clockwise.</p>
+</section>
+
+<section class="card" aria-labelledby="h-recs">
+  <h2 id="h-recs">Saved points <span id="count"></span></h2>
+  <ul class="recs" id="recs"></ul>
+</section>
+
+<section class="card" aria-labelledby="h-exp">
+  <h2 id="h-exp">Export and share</h2>
+  <div class="btns">
+    <button class="btn" id="x-csv">Download CSV for Airtable</button>
+    <button class="btn quiet" id="x-share">Share CSV</button>
+    <button class="btn quiet" id="x-geo">Download GeoJSON</button>
+    <button class="btn quiet" id="x-stops">Download stops.json for the app</button>
+  </div>
+  <label for="imp">Merge another volunteer's CSV<input id="imp" type="file" accept=".csv,text/csv"></label>
+  <p class="status" id="xstatus" aria-live="polite"></p>
+</section>
+</div>
+
+<script>
+/* ---------- REFERENCE DATA (from whittingtonhistory.org/st-bartholomews-churchyard-development) ---------- */
+const AREAS = [
+ {n:1, opened:"12th century", note:"Around the site of the original church. Reused for centuries; later burials between the new south door and the old foundations.", subs:[
+   ["SD","South Door"],["SS","South Side"],["OBGS","OBGS (Old Burial Ground South)"],["WD","West Door"]]},
+ {n:2, opened:"1863", note:"The triangular plot added with the new church. Reused many times under different names; traces of old rows 20–34.", subs:[
+   ["WE","West End (cremations)"],["WS","West Side"],["WP","West Path"],["EE","East End"],["NS","North Side"],["OP","Old Path"],["SC","Sheepbridge Corner"],["MP","Middle Path"]]},
+ {n:3, opened:"c. 1890", note:"Not reused. Few memorials, so plots can be hard to locate.", subs:[["BGS","BGS (Burial Ground South)"]]},
+ {n:4, opened:"1913", note:"Originally Ord or Ordinary. Not reused.", subs:[["OO","Old Ord"]]},
+ {n:5, opened:"1924", note:"NBGS at the western end, East Gate at the point of the triangle. Not reused.", subs:[["NBGS","NBGS (New Burial Ground South)"],["EG","East Gate"]]},
+ {n:6, opened:"1931", note:"Best on the south side by the path, New Ord on the north side by the hedge. Not reused.", subs:[["BE","Best"],["NO","New Ord"]]},
+ {n:7, opened:"1981", note:"The Croft. The only part still open for new burials.", subs:[["CR","Croft"]]}
+];
+const STOPS = [["revhouse","Revolution House"],["church","St Bartholomew's Church"],["grange","Whittington Grange"],["greeninn","White Horse Inn, Whittington Green"],["hall","Whittington Hall"],["school","Mary Swanwick School"],["wesleyan","Former Wesleyan Chapel"],["manorhouse","Site of the Old Manor House"],["chapelcottage","Chapel Cottage"],["plough","The Plough Inn"],["sicfarm","Sic Farm"],["cockmagpie","Cock & Magpie Inn"],["glasshouse","Glass House Farm"]];
+/* Phase 1 boundary and church outline from churchyard_map.html */
+const NB=53.272862;
+const BOUNDARY=[[NB,-1.425670],[NB,-1.425125],[53.272785,-1.424960],[53.272332,-1.424727],[53.272239,-1.424650],[53.272292,-1.424700],[53.272682,-1.425755]];
+const CHURCH={minLat:53.272917,maxLat:53.273220,minLng:-1.425079,maxLng:-1.424627};
+
+/* ---------- STATE ---------- */
+const $=id=>document.getElementById(id);
+const ls={get(k,d){try{const v=localStorage.getItem("cs."+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem("cs."+k,JSON.stringify(v));return true}catch(e){return false}}};
+let records=ls.get("records",[]);
+let mode="area", fix=null, capturing=false;
+
+/* ---------- FORM SETUP ---------- */
+$("sub").innerHTML=AREAS.map(a=>`<optgroup label="Area ${a.n} · opened ${a.opened}"><option value="A${a.n}">Whole of Area ${a.n} (outer boundary)</option>${a.subs.map(([c,l])=>`<option value="${c}">${l}</option>`).join("")}</optgroup>`).join("");
+$("stop").innerHTML=STOPS.map(([id,t],i)=>`<option value="${id}">${i+1}. ${t}</option>`).join("");
+$("who").value=ls.get("who","");
+$("sub").value=ls.get("sub","A1");
+function areaOf(code){if(/^A\d$/.test(code))return AREAS[+code[1]-1];return AREAS.find(a=>a.subs.some(s=>s[0]===code))}
+function subLabel(code){if(/^A\d$/.test(code))return "Whole of Area "+code[1];const a=areaOf(code);return a?a.subs.find(s=>s[0]===code)[1]:code}
+function groupKey(){return mode==="area"?$("sub").value:mode==="stop"?"TS-"+$("stop").value:"REF"}
+function nextSeq(key){const used=records.filter(r=>r.group===key).map(r=>r.seq);return used.length?Math.max(...used)+1:1}
+function pointId(){const s=String(+$("seq").value||1).padStart(2,"0");
+  if(mode==="area")return $("sub").value+"-"+s; if(mode==="stop")return "TS-"+$("stop").value; return "REF-"+s}
+function refreshWhat(resetSeq){
+  ["area","stop","ref"].forEach(m=>{$("what-"+m).hidden=m!==mode;$("m-"+m).setAttribute("aria-pressed",m===mode)});
+  if(mode==="area"){const a=areaOf($("sub").value);$("subhint").textContent=`Area ${a.n}, opened ${a.opened}. ${a.note}`}
+  if(resetSeq)$("seq").value=nextSeq(groupKey());
+  $("seq").closest("label").hidden = mode==="stop";
+  $("pid").textContent=pointId();
+}
+document.querySelectorAll(".seg button").forEach(b=>b.addEventListener("click",()=>{mode=b.dataset.mode;refreshWhat(true)}));
+$("sub").addEventListener("change",()=>{ls.set("sub",$("sub").value);refreshWhat(true)});
+$("stop").addEventListener("change",()=>refreshWhat(true));
+$("seq").addEventListener("input",()=>refreshWhat(false));
+$("who").addEventListener("input",()=>ls.set("who",$("who").value.toUpperCase()));
+
+/* ---------- GPS CAPTURE ---------- */
+function quality(acc){return acc<=5?["Good","q-good"]:acc<=10?["Fair","q-ok"]:["Poor","q-poor"]}
+async function capture(){
+  if(!("geolocation" in navigator)){$("status").textContent="This phone can't share its location.";return}
+  capturing=true; fix=null; $("save").disabled=true; const samples=[]; const DURATION=20000, t0=Date.now();
+  $("go").textContent="Use readings so far"; $("status").textContent="Waiting for GPS…"; $("bar").style.width="0";
+  let lock=null; try{lock=await navigator.wakeLock?.request("screen")}catch(e){}
+  const id=navigator.geolocation.watchPosition(p=>{
+    const c=p.coords; samples.push({lat:c.latitude,lng:c.longitude,acc:c.accuracy});
+    const best=Math.min(...samples.map(s=>s.acc));
+    $("status").textContent=`${samples.length} readings · best ±${best.toFixed(1)} m`;
+    show(average(samples));
+  },err=>{$("status").textContent=err.code===1?"Location permission is off. Allow location for this page in your browser settings.":"No GPS signal yet. Move away from walls and trees if you can.";},{enableHighAccuracy:true,maximumAge:0,timeout:30000});
+  const tick=setInterval(()=>{const f=Math.min(1,(Date.now()-t0)/DURATION);$("bar").style.width=(f*100)+"%";if(f>=1)finish()},250);
+  function finish(){
+    clearInterval(tick); navigator.geolocation.clearWatch(id); try{lock&&lock.release()}catch(e){}
+    capturing=false; capture.finish=null; $("go").textContent="Take reading again"; $("bar").style.width="100%";
+    if(!samples.length){$("status").textContent="No reading taken. Try again in the open.";return}
+    fix=average(samples); show(fix);
+    const [q]=quality(fix.acc); $("status").textContent=`Reading ready: ${fix.n} sample${fix.n===1?"":"s"} averaged, ${q.toLowerCase()} accuracy. Check the plan below, then save.`;
+    $("save").disabled=false; drawPlot();
+  }
+  capture.finish=finish;
+}
+function average(samples){
+  const pool=samples.filter(s=>s.acc<=Math.max(30,Math.min(...samples.map(x=>x.acc))*1.5));
+  let w=0,lat=0,lng=0; pool.forEach(s=>{const k=1/(s.acc*s.acc);w+=k;lat+=s.lat*k;lng+=s.lng*k});
+  lat/=w; lng/=w; const acc=Math.sqrt(1/w)*Math.sqrt(pool.length); /* conservative: not shrunk by averaging */
+  return {lat,lng,acc:Math.min(acc,Math.min(...pool.map(s=>s.acc))),n:pool.length};
+}
+function show(f){$("f-lat").textContent=f.lat.toFixed(6);$("f-lng").textContent=f.lng.toFixed(6);
+  const [q,c]=quality(f.acc);$("f-acc").innerHTML=`±${f.acc.toFixed(1)} m <span class="chip ${c}">${q}</span>`}
+$("go").addEventListener("click",()=>{if(capturing){capture.finish&&capture.finish();return}capture()});
+
+/* ---------- SAVE ---------- */
+$("save").addEventListener("click",()=>{
+  if(!fix)return;
+  if(mode==="ref"&&!$("refname").value.trim()){$("status").textContent="Give the landmark a name before saving.";$("refname").focus();return}
+  const group=groupKey(), area=mode==="area"?areaOf($("sub").value):null;
+  const rec={key:Date.now().toString(36)+Math.random().toString(36).slice(2,6), id:pointId(), group, kind:mode,
+    area: area?"Area "+area.n:"", section: mode==="area"?subLabel($("sub").value):mode==="stop"?$("stop").selectedOptions[0].text.replace(/^\d+\.\s*/,""):$("refname").value.trim(),
+    ptype: mode==="area"?$("ptype").value:mode==="stop"?"Trail stop":$("reftype").value,
+    seq: mode==="stop"?1:(+$("seq").value||1), lat:+fix.lat.toFixed(7), lng:+fix.lng.toFixed(7), acc:+fix.acc.toFixed(1), n:fix.n,
+    by:($("who").value||"").toUpperCase(), at:new Date().toISOString(), photo:$("photo").value.trim(), notes:$("notes").value.trim()};
+  if(mode==="stop") records=records.filter(r=>r.id!==rec.id);
+  records.push(rec);
+  if(!ls.set("records",records)) $("status").textContent="Saved for now, but this browser won't keep it. Export before closing.";
+  else $("status").textContent=`Saved ${rec.id}.`;
+  fix=null; $("save").disabled=true; $("notes").value=""; $("photo").value=""; $("go").textContent="Take reading";
+  ["f-lat","f-lng","f-acc"].forEach(i=>$(i).textContent="—"); $("bar").style.width="0";
+  refreshWhat(true); drawPlot(); listRecs();
+});
+
+/* ---------- PLAN ---------- */
+const AREA_COLOR=n=>`var(--a${n})`;
+function colorFor(r){if(r.kind==="area")return AREA_COLOR(+r.area.replace(/\D/g,""));if(r.kind==="stop")return "var(--accent)";return "var(--ref)"}
+function drawPlot(){
+  const pts=[...BOUNDARY.map(([lat,lng])=>({lat,lng})),{lat:CHURCH.minLat,lng:CHURCH.minLng},{lat:CHURCH.maxLat,lng:CHURCH.maxLng},
+    ...records.filter(r=>r.kind!=="stop").map(r=>({lat:r.lat,lng:r.lng}))]; if(fix)pts.push(fix);
+  const lat0=53.2727,k=Math.cos(lat0*Math.PI/180);
+  const m=p=>({x:(p.lng+1.4252)*k*111320,y:-(p.lat-lat0)*110540});
+  const M=pts.map(m); const minX=Math.min(...M.map(p=>p.x)),maxX=Math.max(...M.map(p=>p.x)),minY=Math.min(...M.map(p=>p.y)),maxY=Math.max(...M.map(p=>p.y));
+  const W=380,H=Math.round(Math.max(260,Math.min(520,W*(maxY-minY+16)/(maxX-minX+16))));
+  const sc=Math.min((W-36)/(maxX-minX||1),(H-36)/(maxY-minY||1));
+  const ox=(W-(maxX-minX)*sc)/2, oy=(H-(maxY-minY)*sc)/2;
+  const T=p=>{const q=m(p);return [ox+(q.x-minX)*sc, oy+(q.y-minY)*sc]};
+  const poly=arr=>arr.map(p=>T(p).map(v=>v.toFixed(1)).join(",")).join(" ");
+  const bd=poly(BOUNDARY.map(([lat,lng])=>({lat,lng})));
+  const [cx1,cy1]=T({lat:CHURCH.maxLat,lng:CHURCH.minLng}), [cx2,cy2]=T({lat:CHURCH.minLat,lng:CHURCH.maxLng});
+  const groups={}; records.filter(r=>r.kind==="area").forEach(r=>(groups[r.group]=groups[r.group]||[]).push(r));
+  const shapes=Object.values(groups).map(g=>{g.sort((a,b)=>a.seq-b.seq);const c=colorFor(g[0]);
+    if(g.length<2)return"";const pl=poly(g);return g.length>=3?`<polygon points="${pl}" fill="${c}" fill-opacity=".14" stroke="${c}" stroke-width="2"/>`:`<polyline points="${pl}" fill="none" stroke="${c}" stroke-width="2"/>`}).join("");
+  const dots=records.filter(r=>r.kind!=="stop").map(r=>{const [x,y]=T(r);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" fill="${colorFor(r)}" stroke="var(--surface)" stroke-width="1.5"/><text x="${(x+7).toFixed(1)}" y="${(y-6).toFixed(1)}" font-size="10" font-family="var(--f-data)" fill="var(--ink)">${r.id.replace(/^REF-/,"R")}</text>`}).join("");
+  let cur=""; if(fix){const [x,y]=T(fix);cur=`<circle cx="${x}" cy="${y}" r="${Math.max(5,fix.acc*sc)}" fill="#2f6fd6" fill-opacity=".15"/><circle cx="${x}" cy="${y}" r="6" fill="#2f6fd6" stroke="var(--surface)" stroke-width="2"/>`}
+  const tenM=10*sc;
+  $("plot").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Plan of recorded survey points">
+   <rect width="${W}" height="${H}" fill="var(--surface)"/>
+   <polygon points="${bd}" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="4 3"/>
+   <rect x="${cx1}" y="${cy1}" width="${cx2-cx1}" height="${cy2-cy1}" fill="var(--rule)" stroke="var(--muted)" stroke-width="1"/>
+   <text x="${(cx1+cx2)/2}" y="${(cy1+cy2)/2+4}" text-anchor="middle" font-size="11" fill="var(--muted)" font-family="var(--f-body)">Church</text>
+   ${shapes}${dots}${cur}
+   <g transform="translate(14 ${H-14})"><line x1="0" y1="0" x2="${tenM}" y2="0" stroke="var(--ink)" stroke-width="2"/><text x="0" y="-5" font-size="10" fill="var(--muted)" font-family="var(--f-data)">10 m</text></g>
+   <text x="${W-12}" y="20" text-anchor="end" font-size="11" fill="var(--muted)" font-family="var(--f-data)">N ↑</text></svg>`;
+  $("key").innerHTML=AREAS.map(a=>`<span><i style="background:${AREA_COLOR(a.n)}"></i>Area ${a.n}</span>`).join("")+`<span><i style="background:var(--ref)"></i>Landmark</span><span><i style="background:#2f6fd6"></i>Current reading</span>`;
+}
+
+/* ---------- LIST ---------- */
+function listRecs(){
+  $("count").textContent=`(${records.length})`;
+  if(!records.length){$("recs").innerHTML=`<li><span class="rmeta">No points yet. Your first saved reading will appear here and on the plan.</span></li>`;return}
+  const seen={};records.forEach(r=>{if(r.kind!=="stop")seen[r.id]=(seen[r.id]||0)+1});
+  $("recs").innerHTML=[...records].reverse().map(r=>`<li><span><span class="rid">${r.id}</span>${seen[r.id]>1?' <span class="chip q-poor">Same number used twice</span>':""} · ${r.section} · ${r.ptype}</span>
+   <span class="rmeta">${r.lat.toFixed(6)}, ${r.lng.toFixed(6)} · ±${r.acc} m · ${r.by||"—"} · ${new Date(r.at).toLocaleString("en-GB",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+   <button data-del="${r.key}">Delete</button></li>`).join("");
+}
+$("recs").addEventListener("click",e=>{const b=e.target.closest("[data-del]");if(!b)return;
+  if(!b.classList.contains("confirm")){b.classList.add("confirm");b.textContent="Tap to confirm";setTimeout(()=>{if(b.isConnected){b.classList.remove("confirm");b.textContent="Delete"}},4000);return}
+  records=records.filter(r=>r.key!==b.dataset.del);ls.set("records",records);listRecs();drawPlot();refreshWhat(true)});
+
+/* ---------- EXPORT / IMPORT ---------- */
+const COLS=[["Point ID","id"],["Type","kind"],["Area","area"],["Section","section"],["Point type","ptype"],["Sequence","seq"],["Latitude","lat"],["Longitude","lng"],["Accuracy (m)","acc"],["Samples","n"],["Recorded by","by"],["Recorded at","at"],["Photo","photo"],["Notes","notes"],["Group","group"],["Record key","key"]];
+const KIND_LABEL={area:"Churchyard area",stop:"Trail stop",ref:"Landmark"}, KIND_BACK={"Churchyard area":"area","Trail stop":"stop","Landmark":"ref"};
+const q=v=>{v=v==null?"":String(v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+function toCSV(){return [COLS.map(c=>c[0]).join(","),...records.map(r=>COLS.map(([,k])=>q(k==="kind"?KIND_LABEL[r.kind]:r[k])).join(","))].join("\r\n")}
+function stamp(){return new Date().toISOString().slice(0,10)}
+function save(name,text,type){
+  try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+    $("xstatus").textContent=`Prepared ${name}. If nothing downloaded, use Share CSV instead.`}catch(e){$("xstatus").textContent="This browser blocked the download. Use Share CSV instead."}}
+$("x-csv").addEventListener("click",()=>{if(!records.length){$("xstatus").textContent="Nothing to export yet.";return}save(`churchyard-survey-${stamp()}${$("who").value?"-"+$("who").value.toUpperCase():""}.csv`,toCSV(),"text/csv")});
+$("x-share").addEventListener("click",async()=>{
+  if(!records.length){$("xstatus").textContent="Nothing to share yet.";return}
+  const f=new File([toCSV()],`churchyard-survey-${stamp()}.csv`,{type:"text/csv"});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:"Churchyard survey points"});$("xstatus").textContent="Shared."}catch(e){$("xstatus").textContent="Sharing was cancelled."}}
+  else $("xstatus").textContent="This browser can't share files. Use Download CSV instead.";
+});
+$("x-geo").addEventListener("click",()=>{
+  if(!records.length){$("xstatus").textContent="Nothing to export yet.";return}
+  const feats=records.map(r=>({type:"Feature",geometry:{type:"Point",coordinates:[r.lng,r.lat]},properties:Object.fromEntries(COLS.map(([h,k])=>[h,k==="kind"?KIND_LABEL[r.kind]:r[k]]))}));
+  const groups={};records.filter(r=>r.kind==="area").forEach(r=>(groups[r.group]=groups[r.group]||[]).push(r));
+  Object.entries(groups).forEach(([g,rs])=>{if(rs.length<3)return;rs.sort((a,b)=>a.seq-b.seq);const ring=rs.map(r=>[r.lng,r.lat]);ring.push(ring[0]);
+    feats.push({type:"Feature",geometry:{type:"Polygon",coordinates:[ring]},properties:{Section:rs[0].section,Area:rs[0].area,Group:g,Points:rs.length}})});
+  save(`churchyard-survey-${stamp()}.geojson`,JSON.stringify({type:"FeatureCollection",features:feats},null,1),"application/geo+json");
+});
+$("x-stops").addEventListener("click",()=>{
+  const s=records.filter(r=>r.kind==="stop").map(r=>({id:r.group.slice(3),title:r.section,lat:r.lat,lng:r.lng,acc:r.acc}));
+  if(!s.length){$("xstatus").textContent="No trail stops recorded yet. Choose Trail stop above to record one.";return}
+  save("stops.json",JSON.stringify({updated:new Date().toISOString(),stops:s},null,1),"application/json");
+});
+function parseCSV(t){const rows=[];let row=[],f="",i=0,inq=false;
+  for(;i<t.length;i++){const c=t[i];if(inq){if(c=='"'){if(t[i+1]=='"'){f+='"';i++}else inq=false}else f+=c}
+   else if(c=='"')inq=true;else if(c==","){row.push(f);f=""}else if(c=="\n"){row.push(f.replace(/\r$/,""));rows.push(row);row=[];f=""}else f+=c}
+  if(f||row.length){row.push(f.replace(/\r$/,""));rows.push(row)}return rows}
+$("imp").addEventListener("change",async e=>{
+  const file=e.target.files[0];if(!file)return;
+  try{const rows=parseCSV(await file.text());const head=rows.shift();const idx=Object.fromEntries(COLS.map(([h,k])=>[k,head.indexOf(h)]));
+    if(idx.key<0||idx.lat<0)throw new Error("not ours");
+    const have=new Set(records.map(r=>r.key));let added=0;
+    rows.filter(r=>r.length>1).forEach(r=>{const o={};COLS.forEach(([,k])=>o[k]=idx[k]>=0?r[idx[k]]:"");
+      o.kind=KIND_BACK[o.kind]||o.kind;["lat","lng","acc","seq","n"].forEach(k=>o[k]=+o[k]);
+      if(!have.has(o.key)&&isFinite(o.lat)&&isFinite(o.lng)){records.push(o);have.add(o.key);added++}});
+    ls.set("records",records);listRecs();drawPlot();refreshWhat(true);
+    $("xstatus").textContent=`Merged ${added} new point${added===1?"":"s"} from ${file.name}.`;
+  }catch(err){$("xstatus").textContent="That file isn't a survey export from this page. Choose a CSV made with Download CSV."}
+  e.target.value="";
+});
+
+refreshWhat(true); drawPlot(); listRecs();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+</script>
+
+</body>
+</html>

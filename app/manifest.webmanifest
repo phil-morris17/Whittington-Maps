@@ -1,0 +1,14 @@
+{
+  "name": "Whittington Trail",
+  "short_name": "Whittington",
+  "description": "Old Whittington's Trail Through Time and History Has a Voice films, from the Whittington History & Heritage Group.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eef1ec",
+  "theme_color": "#1c4a48",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Whittington Trail</title>
+<meta name="theme-color" content="#1c4a48">
+<meta name="description" content="Walk Old Whittington's history: thirteen trail stops, stories, quizzes and the History Has a Voice films from the Whittington History & Heritage Group.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Whittington">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IM+Fell+English:ital@0;1&family=Inconsolata:wght@500&display=swap">
+<style>
+/* Layout: one-screen phone app — fixed header, scrolling story column, bottom tab bar (Trail · Map · Voices). */
+:root{
+  --paper:#eef1ec; --surface:#ffffff; --ink:#1b2426; --muted:#56635f; --rule:#d3dbd5;
+  --accent:#1c6b66; --accent-soft:#dbe9e5; --on-accent:#ffffff;
+  --good:#2c7a45; --good-soft:#e1f0e5; --bad:#a3402e; --bad-soft:#f6e3de;
+  --f-display:"IM Fell English", "Iowan Old Style", Georgia, serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-data:"Inconsolata", ui-monospace, Menlo, monospace;
+  --step-0:1.0625rem; --step-1:1.25rem; --step-2:1.6rem; --step-3:2.1rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#111718; --surface:#192123; --ink:#e5ebe8; --muted:#9caaa6; --rule:#2a3537;
+  --accent:#6bbcb2; --accent-soft:#1d3634; --on-accent:#0c1414;
+  --good:#74c78d; --good-soft:#1a3022; --bad:#e8907a; --bad-soft:#3a201b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#111718; --surface:#192123; --ink:#e5ebe8; --muted:#9caaa6; --rule:#2a3537;
+  --accent:#6bbcb2; --accent-soft:#1d3634; --on-accent:#0c1414;
+  --good:#74c78d; --good-soft:#1a3022; --bad:#e8907a; --bad-soft:#3a201b; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:var(--step-0);line-height:1.55;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+header.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:14px 16px 10px;border-bottom:1px solid var(--rule);background:var(--paper)}
+.brand{font-family:var(--f-display);font-size:1.45rem;line-height:1.1;margin:0}
+.brand small{display:block;font-family:var(--f-body);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.progress{font-family:var(--f-data);font-size:.95rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.view{padding:16px 16px 28px;max-width:40rem;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+
+nav.tabs{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule);background:var(--surface);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs button{background:none;border:0;padding:10px 4px 12px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.9rem;color:var(--muted);cursor:pointer;min-height:56px}
+nav.tabs button svg{width:24px;height:24px}
+nav.tabs button[aria-selected="true"]{color:var(--accent);font-weight:700}
+
+/* near-me banner */
+.locate{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--accent-soft);border-radius:10px}
+.locate p{margin:0;flex:1;min-width:0}
+.btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;border:0;background:var(--accent);color:var(--on-accent);padding:10px 16px;border-radius:999px;font-weight:700;cursor:pointer;min-height:44px;white-space:nowrap}
+.btn.quiet{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.here{border:2px solid var(--accent);background:var(--surface);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.here .label{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.here h2{margin:0;font-family:var(--f-display);font-weight:400;font-size:var(--step-2);line-height:1.15}
+
+.intro{margin:0;color:var(--muted)}
+
+/* stop list */
+ol.stops{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ol.stops li{border-bottom:1px solid var(--rule)}
+ol.stops button{display:grid;grid-template-columns:2.4rem 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:14px 2px;cursor:pointer}
+.num{font-family:var(--f-display);font-size:1.6rem;color:var(--accent);text-align:center;line-height:1}
+.stopname{font-weight:700;display:block}
+.stopsub{color:var(--muted);font-size:.92rem;display:block}
+.meta{font-family:var(--f-data);font-size:.85rem;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.tick{display:inline-flex;align-items:center;gap:4px;color:var(--good);font-family:var(--f-body);font-weight:700}
+
+/* story */
+.back{align-self:flex-start;background:none;border:0;color:var(--accent);font-weight:700;padding:6px 0;cursor:pointer;min-height:44px}
+.eyebrow{font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+h1.story{font-family:var(--f-display);font-weight:400;font-size:var(--step-3);line-height:1.08;margin:0;text-wrap:balance}
+.story p{margin:0}
+.storybody{display:flex;flex-direction:column;gap:14px;max-width:65ch}
+.fact{border-left:3px solid var(--accent);padding:4px 0 4px 14px;font-style:italic}
+.fact b{font-style:normal;display:block;font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.quiz{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.quiz h3{margin:0;font-size:var(--step-1);line-height:1.3}
+.quiz .opt{text-align:left;background:var(--paper);border:1.5px solid var(--rule);border-radius:10px;padding:12px 14px;cursor:pointer;min-height:48px}
+.quiz .opt[data-state="right"]{border-color:var(--good);background:var(--good-soft)}
+.quiz .opt[data-state="wrong"]{border-color:var(--bad);background:var(--bad-soft)}
+.quiz .fb{margin:0;font-weight:700}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+.dist{font-family:var(--f-data);color:var(--muted)}
+
+/* map */
+.mapwrap{background:var(--surface);border:1px solid var(--rule);border-radius:12px;overflow:hidden}
+.mapwrap svg{display:block;width:100%;height:auto}
+.legend{font-size:.92rem;color:var(--muted);margin:0}
+.unplaced{margin:0;padding-left:1.1rem;color:var(--muted)}
+
+/* voices */
+.group h2{font-family:var(--f-display);font-weight:400;font-size:var(--step-2);margin:0 0 4px}
+.group > p{margin:0 0 10px;color:var(--muted)}
+.voices{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:14px}
+.voice{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--rule);border-radius:12px;overflow:hidden;text-decoration:none;color:inherit}
+.thumb{aspect-ratio:16/9;max-width:100%;background:var(--accent-soft);position:relative;display:grid;place-items:center}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb .mono{font-family:var(--f-display);font-size:2.6rem;color:var(--accent)}
+.play{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;background:var(--accent);display:grid;place-items:center}
+.play svg{width:16px;height:16px;fill:var(--on-accent);margin-left:3px}
+.voice div.txt{padding:12px 14px 14px;display:flex;flex-direction:column;gap:4px}
+.voice strong{font-size:1.05rem}
+.voice span{color:var(--muted);font-size:.95rem}
+.note{font-size:.92rem;color:var(--muted);margin:0}
+.toast{position:fixed;left:16px;right:16px;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:12px 14px;border-radius:10px;font-size:.95rem}
+@media (prefers-reduced-motion: no-preference){.view{animation:in .18s ease-out}@keyframes in{from{transform:translateY(6px)}to{transform:none}}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <h1 class="brand"><small>Old Whittington</small>Trail Through Time</h1>
+  <span class="progress" id="progress"></span>
+</header>
+<main id="main"></main>
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" id="tab-trail" data-tab="trail" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 20c3-2 2-6 6-7s6-4 4-8"/><circle cx="5" cy="20" r="1.6"/><circle cx="15" cy="5" r="1.6"/></svg>Trail</button>
+  <button role="tab" id="tab-map" data-tab="map" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>Map</button>
+  <button role="tab" id="tab-voices" data-tab="voices" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Voices</button>
+</nav>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* ---------- CONTENT ---------- */
+const SITE = "https://whittingtonhistory.org";
+const STOPS = [
+ {id:"revhouse", sub:"1688", title:"Revolution House", url:SITE+"/revolution-house-2/", voice:"ac-t4IfS0nI",
+  paragraphs:["This modest thatched cottage was, in 1688, the setting for a meeting that helped change the course of English history. The Earl of Devonshire, the Earl of Danby and John D'Arcy are said to have met here, using a hunting party as cover, to plan support for William of Orange against King James II.",
+   "The building was originally an alehouse known as the Cock and Pynot (Derbyshire dialect for magpie). Its low ceilings and thick stone walls still carry the atmosphere of a 17th-century wayside inn."],
+  fact:"Grade II* listed, Revolution House is one of very few buildings in England directly linked to the planning of the Glorious Revolution of 1688.",
+  quiz:{q:"What was Revolution House originally known as?",options:["The King's Head","The Cock and Pynot","The Whittington Arms"],correct:1,right:"Correct. Pynot is old Derbyshire dialect for magpie.",wrong:"Not quite. It was the Cock and Pynot, “pynot” being dialect for magpie."}},
+ {id:"church", sub:"Medieval, rebuilt 1863", title:"St Bartholomew's Church", url:SITE+"/the-norman-church/", voice:"ac-t4IfS0nI", lat:53.27307, lng:-1.42485,
+  paragraphs:["St Bartholomew's has stood at the heart of Old Whittington for centuries. A Norman church stood on this site from around 1150 until it was demolished in 1863 to make way for the Victorian building seen today. Two fir trees in the churchyard still mark where the old Norman aisle ends once stood.",
+   "The churchyard holds generations of village families. Among the thousands of burials recorded here is the 18th-century antiquarian and rector Samuel Pegge, who served the parish from 1751 to 1796."],
+  fact:"The church's Burial in Woollen affidavit register runs from 1675 to 1812 and includes a burial on Christmas Day 1812.",
+  quiz:{q:"What replaced the original Norman church in 1863?",options:["Nothing, it still stands","The current Victorian church building","A Methodist chapel"],correct:1,right:"Correct. The Norman church was demolished and rebuilt in 1863.",wrong:"The Norman church was demolished in 1863 and rebuilt as the church you see today."}},
+ {id:"grange", sub:"Farming and family life", title:"Whittington Grange", url:SITE+"/notable-properties-their-owners/", voice:"VkkGKj9hpVY",
+  paragraphs:["Away from the church and the main road, Whittington Grange represents the quieter, agricultural side of parish life: the fields, tenant farms and rural households that made up much of Old Whittington beyond its famous landmarks.",
+   "Families connected to the wider Whittington story, including the Swanwicks, had strong roots in farming as well as engineering and industry. Russell Swanwick held a 38-year tenancy of a Cirencester farm known for award-winning Cotswold sheep and Berkshire pigs."],
+  fact:"Field parcel numbers on historic Ordnance Survey maps, like the one this trail is based on, recorded the acreage of every field.",
+  quiz:{q:"Which Whittington family had strong farming connections alongside their industrial and legal careers?",options:["The Dixons","The Swanwicks","The Peggeses"],correct:1,right:"Correct. The Swanwicks combined engineering, law and farming across generations.",wrong:"It was the Swanwick family: engineers, lawyers and farmers across several generations."}},
+ {id:"greeninn", sub:"The village crossroads", title:"White Horse Inn, Whittington Green", url:SITE+"/pubs-of-whittington/",
+  paragraphs:["Whittington Green was a natural gathering point, where roads met, travellers stopped and the news of the day was exchanged. The White Horse Inn served this role for generations, alongside the lodge and cottages that clustered around the green.",
+   "Coaching inns like this one were the social hubs of their era: staging posts for travellers, meeting places for parish business, and sometimes the venue for auctions, inquests or celebrations."],
+  fact:"Village greens often doubled as informal marketplaces and the site of maypole dances, fairs and community gatherings well into the 20th century.",
+  quiz:{q:"What role did coaching inns like the White Horse typically serve?",options:["Purely private houses","Staging posts and community meeting places","Schoolrooms only"],correct:1,right:"Correct. Inns were central to travel and community life.",wrong:"Inns like this were staging posts for travellers and hubs of community life."}},
+ {id:"hall", sub:"The Dixon family", title:"Whittington Hall", url:SITE+"/whittington-hall/",
+  paragraphs:["Whittington Hall marks the culmination of one of the parish's most important family stories. John Dixon, the last of the glassworking Dixons, left his estate to his relative Henry Dixon, who had no interest in glassmaking but used the inheritance to build Whittington Hall and become Lord of the Manor.",
+   "This was the turning point in the Dixons' change from industrial glassmakers into the leading landholding family of the parish, a shift that went on to shape local institutions, including the long dispute over the Webster Endowed Grammar School."],
+  fact:"Elizabeth Dixon was Henry Dixon's first wife, not his widow, a detail that matters for tracing the family's line of inheritance correctly.",
+  quiz:{q:"How did Henry Dixon come to build Whittington Hall?",options:["He inherited the glassworks and expanded it","He inherited John Dixon's estate and used it to build the Hall","He bought the Hall from the Foljambe family"],correct:1,right:"Correct. Henry redirected John Dixon's estate into building the Hall.",wrong:"Henry inherited John Dixon's estate and used it to build the Hall, though he had no interest in glassmaking."}},
+ {id:"school", sub:"Education in the village", title:"Mary Swanwick School", url:SITE+"/life-and-legacy-of-frederick-swanwick-a-pioneer-engineer/", voice:"VkkGKj9hpVY",
+  paragraphs:["The school takes its name from Mary Swanwick, whose long involvement in village education led to it being named in her honour. The reshaping of the school itself was Frederick Swanwick's achievement, secured through his funding and gift of land.",
+   "The naming reflects a pattern across the parish: a family's public legacy often rested as much on continued care as on the original act of founding. Frederick built the opportunity; Mary's later involvement is what the village remembered."],
+  fact:"Frederick Swanwick had been apprentice and private secretary to George Stephenson before settling in Old Whittington in 1837.",
+  quiz:{q:"Why is the school named after Mary Swanwick rather than Frederick, who funded it?",options:["Frederick asked for it","Her long later involvement led to the naming","It was a Swanwick family tradition"],correct:1,right:"Correct. Mary's ongoing involvement led to the naming.",wrong:"It was Mary's own long, later involvement with the school that led to it being named after her."}},
+ {id:"wesleyan", sub:"A change of congregation", title:"Former Wesleyan Chapel", url:SITE+"/churches-and-chapels/",
+  paragraphs:["Across the road from the school, this building began life as a Wesleyan chapel, part of the wave of Methodist chapels that sprang up across the Chesterfield area from the 18th century, offering an alternative to the parish church.",
+   "It is now a Seventh-day Adventist church. Nonconformist buildings across England have often passed between denominations like this while remaining in unbroken religious use."],
+  fact:"Chapels like this were at the centre of local disputes with the established church, most notably the Webster Endowed Grammar School controversy, which set the Church of England and Dixon side against the nonconformist and Swanwick side until a settlement by 1857.",
+  quiz:{q:"What was this building's original denomination?",options:["Roman Catholic","Wesleyan Methodist","Baptist"],correct:1,right:"Correct. It began as a Wesleyan chapel.",wrong:"It was originally a Wesleyan Methodist chapel, later a Seventh-day Adventist church."}},
+ {id:"manorhouse", sub:"Traces of the manor", title:"Site of the Old Manor House", url:SITE+"/notable-properties-their-owners/",
+  paragraphs:["Beside the former chapel, this spot once held Whittington's manor house, the seat of authority for the parish long before the Dixons built Whittington Hall and took the title of Lord of the Manor.",
+   "Little survives above ground, but its position close to the church and old village centre follows the medieval pattern of manor, church and settlement clustered together, a layout that still shapes the roads and boundaries of Old Whittington."],
+  fact:"Before the Dixons' rise, the manor of Whittington was held in moiety (a divided share) by the Foljambe family, who acquired it through marriage into the Lowdham family around 1390.",
+  quiz:{q:"What typically clustered together in the medieval layout of this part of the village?",options:["Manor, church and settlement","Railway, canal and mill","Market square and almshouses"],correct:0,right:"Correct. Manor, church and settlement sat close together.",wrong:"The medieval pattern was manor, church and settlement clustered together."}},
+ {id:"chapelcottage", sub:"A path's end", title:"Chapel Cottage", url:SITE+"/churches-and-chapels/",
+  paragraphs:["Chapel Cottage sits where an old footpath meets the road. Its name recalls an earlier chapel that stood on or near this spot before the building became a home.",
+   "Footpaths like this were the everyday routes of the parish long before motor traffic: shortcuts between farms, church and cottages that villagers walked for generations, still traceable in field boundaries and lane junctions today."],
+  fact:"Nonconformist worship in the parish took many forms, from small cottage meetings to purpose-built chapels.",
+  quiz:{q:"What does the name “Chapel Cottage” most likely commemorate?",options:["A nearby manor house","An earlier chapel on this spot","A former coaching inn"],correct:1,right:"Correct. The name recalls an earlier chapel here.",wrong:"The name recalls an earlier chapel that once stood on or near this site."}},
+ {id:"plough", sub:"Another village inn", title:"The Plough Inn", url:SITE+"/pubs-of-whittington/",
+  paragraphs:["The Plough was one of several public houses that once served Old Whittington, its name drawn, like many rural inns, from the farming life of the surrounding fields.",
+   "Village pubs were meeting places for farm workers, venues for informal business and the place to hear local news, long before other forms of communication reached rural parishes."],
+  fact:"Pub names taken from farm tools and work, such as the Plough or the Harrow, were very common across rural England.",
+  quiz:{q:"Where does a pub name like “The Plough” usually come from?",options:["A landowner's surname","Farming life and tools","A famous battle"],correct:1,right:"Correct. It reflects the farming character of the area.",wrong:"Names like the Plough usually reflect the farming life of the countryside around."}},
+ {id:"sicfarm", sub:"Working the land", title:"Sic Farm", url:SITE+"/whittington-enclosure/",
+  paragraphs:["At the edge of the mapped area, this farm represents the working land that bordered the village, the fields and holdings that fed and employed many Whittington families alongside the parish's industry.",
+   "Farms often changed hands or names over generations, and their exact boundaries are some of the hardest details to pin down in parish history."],
+  fact:"The 1825 Enclosure Award for Whittington shows landholding across the parish, including several women who held land in their own right.",
+  quiz:{q:"Which document helps reveal landholding patterns for farms across the parish?",options:["The 1825 Enclosure Award","The Domesday Book","The Webster Grammar School charter"],correct:0,right:"Correct. The 1825 Enclosure Award records landholding across the parish.",wrong:"The 1825 Enclosure Award is the key record of landholding here."}},
+ {id:"cockmagpie", sub:"Before it was Revolution House", title:"Cock & Magpie Inn", url:SITE+"/pubs-of-whittington/", voice:"ac-t4IfS0nI",
+  paragraphs:["Just above Revolution House, the Cock & Magpie shares its name with what Revolution House was originally called: the Cock and Pynot, “pynot” being old Derbyshire dialect for magpie.",
+   "Two neighbouring houses linked by name show how much this corner of the village was shaped by its inns and alehouses, long before one of them became famous in national history."],
+  fact:"“Pynot” was a dialect word for magpie once common across Derbyshire and Yorkshire.",
+  quiz:{q:"What does “pynot” mean in old Derbyshire dialect?",options:["Magpie","Rooster","Blackbird"],correct:0,right:"Correct. Pynot is dialect for magpie.",wrong:"“Pynot” is old Derbyshire dialect for magpie."}},
+ {id:"glasshouse", sub:"Echoes of the glassworks", title:"Glass House Farm", url:SITE+"/the-rise-and-fall-of-dixons-glasshouse-a-historical-insight/",
+  paragraphs:["The name Glass House Farm preserves Whittington's glassmaking past, long connected with the Dixon family before their fortunes turned to land and status with the building of Whittington Hall.",
+   "The Dixons' glassworks once anchored part of the local economy. The trade faded from the landscape but left its mark in place names like this one."],
+  fact:"John Dixon, the last of the glassworking Dixons, left his estate to Henry Dixon, who put it into building Whittington Hall, ending the family's glassmaking chapter.",
+  quiz:{q:"What does the name “Glass House Farm” most likely commemorate?",options:["A greenhouse","The Dixon family's glassmaking","A Victorian conservatory"],correct:1,right:"Correct. It recalls the Dixons' glassmaking industry.",wrong:"The name recalls the Dixon family's glassmaking industry in the parish."}}
+];
+
+const VOICE_GROUPS = [
+ {title:"Voices of Whittington", blurb:"Figures from the parish's past tell their own stories.", items:[
+  {id:"ac-t4IfS0nI", name:"Rev. Dr Samuel Pegge", line:"Rector of Whittington and antiquarian, who saw the importance of the Cock & Pynot alehouse."},
+  {id:"QlA2NEINeTw", name:"William Higginbottom", line:"Memories of village life in the mid-1800s."},
+  {id:"07lCDDEKE7A", name:"Joseph Brotherton", line:"Reformer, MP and pioneer of vegetarianism."},
+  {id:"3QQXM5eK0ns", name:"Francis Davenport", line:"A Whittington Quaker's journey to America."}]},
+ {title:"Our railway history", blurb:"How the railways reached Whittington and changed everyday life.", items:[
+  {id:"O5HoYD2FbGY", name:"George Stephenson", line:"The history of the railways and how they changed the way we live."},
+  {id:"VkkGKj9hpVY", name:"Frederick Swanwick", line:"Stephenson's apprentice, who helped build the early railways and made his home in Whittington."},
+  {id:"9venvzDnQ4o", name:"The History of the Railways", line:"From the first lines to the network that transformed Britain."},
+  {id:"W9stYa4n9Ek", name:"The Making of the Midland Railway", line:"The company that shaped our part of Derbyshire."},
+  {id:"f6KdzWHAv5o", name:"The Turntable", line:"How railway turntables worked, and the story of Barrow Hill Roundhouse."}]}
+];
+const VOICE_BY_ID = Object.fromEntries(VOICE_GROUPS.flatMap(g=>g.items).map(v=>[v.id,v]));
+
+/* ---------- STATE ---------- */
+const store = {
+  get(k,d){try{const v=localStorage.getItem("wt."+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("wt."+k,JSON.stringify(v))}catch(e){}}
+};
+let visited = new Set(store.get("visited",[]));
+let pos = null, watchId = null, locMsg = "";
+const main = document.getElementById("main");
+
+/* Optional stop coordinates recorded on site with the field recorder (stops.json beside this page). */
+fetch("stops.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(j=>{
+  if(!j) return; const list = Array.isArray(j)?j:(j.stops||[]);
+  list.forEach(s=>{const st=STOPS.find(x=>x.id===s.id); if(st&&isFinite(s.lat)&&isFinite(s.lng)){st.lat=+s.lat;st.lng=+s.lng}});
+  render();
+}).catch(()=>{});
+
+/* ---------- HELPERS ---------- */
+const esc = s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function metres(a,b){const R=6371000,r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLng=(b.lng-a.lng)*r;
+  const h=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function fmtDist(m){return m<1000?Math.round(m/5)*5+" m":(m/1000).toFixed(1)+" km"}
+function nearest(){ if(!pos) return null; let best=null;
+  STOPS.forEach((s,i)=>{if(s.lat==null)return; const d=metres(pos,s); if(!best||d<best.d) best={s,i,d}}); return best }
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,3200)}
+function setProgress(){document.getElementById("progress").textContent = visited.size+" / "+STOPS.length+" visited"}
+
+function startLocation(){
+  if(!("geolocation" in navigator)){locMsg="This device can't share its location.";render();return}
+  locMsg="Finding you…"; render();
+  watchId = navigator.geolocation.watchPosition(p=>{
+    pos={lat:p.coords.latitude,lng:p.coords.longitude,acc:p.coords.accuracy}; locMsg=""; store.set("loc",true);
+    const n=nearest(); if(n&&n.d<40&&!visited.has(n.s.id)&&state.tab==="trail"&&!state.stop) toast("You're at "+n.s.title+". Tap it to read its story.");
+    if(state.tab!=="voices") render(true);
+  },err=>{
+    locMsg = err.code===1?"Location is switched off for this page. You can still follow the trail in order.":"Couldn't get a GPS fix yet. Try again in the open.";
+    store.set("loc",false); render();
+  },{enableHighAccuracy:true,maximumAge:5000,timeout:20000});
+}
+
+/* ---------- VIEWS ---------- */
+const state = {tab:"trail", stop:null};
+
+function viewTrail(){
+  const n=nearest();
+  let top="";
+  if(n && n.d<150){
+    top=`<section class="here" aria-live="polite"><span class="label">${n.d<40?"You are here":"Nearest stop"} · <span class="dist">${fmtDist(n.d)}</span></span>
+      <h2>${esc(n.s.title)}</h2><div><button class="btn" data-open="${n.i}">Read the story</button></div></section>`;
+  } else if(watchId==null){
+    top=`<div class="locate"><p>${esc(locMsg||"Walking the trail? Let the app show which stop you're nearest.")}</p><button class="btn" id="locBtn">Use my location</button></div>`;
+  } else if(locMsg){ top=`<div class="locate"><p>${esc(locMsg)}</p></div>` }
+  const items=STOPS.map((s,i)=>{
+    const d = pos&&s.lat!=null ? fmtDist(metres(pos,s)) : "";
+    const tick = visited.has(s.id)?`<span class="tick"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2"/></svg>Visited</span>`:"";
+    return `<li><button data-open="${i}"><span class="num">${i+1}</span><span><span class="stopname">${esc(s.title)}</span><span class="stopsub">${esc(s.sub)}</span></span><span class="meta">${tick||d}</span></button></li>`}).join("");
+  return `<div class="view">${top}<p class="intro">Thirteen stops around Old Whittington, from Revolution House to Glass House Farm. Take them in any order; each has a short story, a fact and a question.</p><ol class="stops">${items}</ol></div>`;
+}
+
+function viewStop(i){
+  const s=STOPS[i]; const v=s.voice&&VOICE_BY_ID[s.voice];
+  const d = pos&&s.lat!=null ? `<span class="dist"> · ${fmtDist(metres(pos,s))} away</span>`:"";
+  const opts=s.quiz.options.map((o,k)=>`<button class="opt" data-q="${k}">${esc(o)}</button>`).join("");
+  return `<div class="view story"><button class="back" data-back>‹ All stops</button>
+   <p class="eyebrow">Stop ${i+1} · ${esc(s.sub)}${d}</p><h1 class="story">${esc(s.title)}</h1>
+   <div class="storybody">${s.paragraphs.map(p=>`<p>${esc(p)}</p>`).join("")}
+   <p class="fact"><b>Did you know</b>${esc(s.fact)}</p></div>
+   <section class="quiz" aria-labelledby="qh"><h3 id="qh">${esc(s.quiz.q)}</h3>${opts}<p class="fb" id="fb" aria-live="polite" hidden></p></section>
+   <div class="links"><a class="btn quiet" href="${s.url}" target="_blank" rel="noopener">Read more on the website</a>
+   ${v?`<a class="btn quiet" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">Watch: ${esc(v.name)}</a>`:""}</div>
+   <div class="links">${i>0?`<button class="btn quiet" data-open="${i-1}">‹ Stop ${i}</button>`:""}${i<STOPS.length-1?`<button class="btn" data-open="${i+1}">Next: stop ${i+2} ›</button>`:""}</div></div>`;
+}
+
+function viewMap(){
+  const placed=STOPS.map((s,i)=>({s,i})).filter(o=>o.s.lat!=null);
+  const pts=placed.map(o=>({lat:o.s.lat,lng:o.s.lng})); if(pos) pts.push(pos);
+  let svg="";
+  if(pts.length){
+    const lat0=pts.reduce((a,p)=>a+p.lat,0)/pts.length, k=Math.cos(lat0*Math.PI/180);
+    const xy=p=>({x:(p.lng)*k*111320,y:-(p.lat)*110540});
+    const P=pts.map(xy); let minX=Math.min(...P.map(p=>p.x)),maxX=Math.max(...P.map(p=>p.x)),minY=Math.min(...P.map(p=>p.y)),maxY=Math.max(...P.map(p=>p.y));
+    const span=Math.max(maxX-minX,maxY-minY,120), cx=(minX+maxX)/2, cy=(minY+maxY)/2, W=360,H=360, sc=(W-60)/span;
+    const T=p=>{const q=xy(p);return {x:W/2+(q.x-cx)*sc,y:H/2+(q.y-cy)*sc}};
+    const bar=Math.pow(10,Math.floor(Math.log10(span/3))); const barPx=bar*sc;
+    svg=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Trail stops plotted by position">
+      <rect width="${W}" height="${H}" fill="var(--surface)"/>
+      ${placed.map(o=>{const t=T(o.s);return `<g data-open="${o.i}" style="cursor:pointer"><circle cx="${t.x}" cy="${t.y}" r="13" fill="var(--accent)"/><text x="${t.x}" y="${t.y+5}" text-anchor="middle" font-size="13" font-weight="700" fill="var(--on-accent)" font-family="var(--f-body)">${o.i+1}</text></g>`}).join("")}
+      ${pos?(()=>{const t=T(pos);return `<circle cx="${t.x}" cy="${t.y}" r="${Math.max(6,Math.min(60,(pos.acc||10)*sc))}" fill="var(--accent)" opacity=".15"/><circle cx="${t.x}" cy="${t.y}" r="7" fill="#2f6fd6" stroke="var(--surface)" stroke-width="3"/>`})():""}
+      <g transform="translate(16 ${H-18})"><line x1="0" y1="0" x2="${barPx}" y2="0" stroke="var(--ink)" stroke-width="2"/><text x="0" y="-6" font-size="11" fill="var(--muted)" font-family="var(--f-data)">${bar>=1000?bar/1000+" km":bar+" m"}</text></g>
+      <text x="${W-16}" y="24" text-anchor="end" font-size="12" fill="var(--muted)" font-family="var(--f-data)">N ↑</text></svg>`;
+  }
+  const missing=STOPS.filter(s=>s.lat==null);
+  return `<div class="view"><div class="mapwrap">${svg||'<p class="note" style="padding:16px">No stop positions recorded yet.</p>'}</div>
+   ${watchId==null?`<div class="locate"><p>${esc(locMsg||"Show yourself on the map.")}</p><button class="btn" id="locBtn">Use my location</button></div>`:""}
+   <p class="legend">Numbered circles are trail stops; tap one to open it.${pos?" The blue dot is you.":""}</p>
+   ${missing.length?`<p class="note">Positions still to be recorded on site (${missing.length}):</p><ul class="unplaced">${missing.map(s=>`<li>${esc(s.title)}</li>`).join("")}</ul>`:""}
+   <a class="btn quiet" style="align-self:flex-start" href="https://phil-morris17.github.io/Whittington-Maps/trail-through-time.html" target="_blank" rel="noopener">Open the illustrated trail map</a></div>`;
+}
+
+function viewVoices(){
+  const groups=VOICE_GROUPS.map(g=>`<section class="group"><h2>${esc(g.title)}</h2><p>${esc(g.blurb)}</p><div class="voices">${
+    g.items.map(v=>`<a class="voice" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">
+     <div class="thumb"><span class="mono" aria-hidden="true">${esc(v.name.replace(/^(Rev\. Dr |The )/,"")[0])}</span>
+     <img alt="" loading="lazy" src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" onerror="this.remove()">
+     <span class="play"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1.5v13l11-6.5z"/></svg></span></div>
+     <div class="txt"><strong>${esc(v.name)}</strong><span>${esc(v.line)}</span></div></a>`).join("")}</div></section>`).join("");
+  return `<div class="view"><p class="intro">History Has a Voice: our avatar films bring Whittington people back to tell their own stories.</p>${groups}
+   <p class="note">Films play on YouTube and need an internet connection. Trail stories work offline once the app is installed.</p></div>`;
+}
+
+/* ---------- RENDER & EVENTS ---------- */
+function render(keepScroll){
+  const y=main.scrollTop;
+  main.innerHTML = state.tab==="trail" ? (state.stop!=null?viewStop(state.stop):viewTrail()) : state.tab==="map" ? viewMap() : viewVoices();
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===state.tab));
+  setProgress(); if(keepScroll) main.scrollTop=y; else main.scrollTop=0;
+}
+function openStop(i){
+  state.tab="trail"; state.stop=i; const s=STOPS[i];
+  if(!visited.has(s.id)){visited.add(s.id);store.set("visited",[...visited])}
+  render(); try{history.replaceState(null,"","#"+s.id)}catch(e){}
+}
+document.addEventListener("click",e=>{
+  const o=e.target.closest("[data-open]"); if(o){openStop(+o.dataset.open);return}
+  if(e.target.closest("[data-back]")){state.stop=null;render();try{history.replaceState(null,"",location.pathname)}catch(_){};return}
+  const t=e.target.closest("nav.tabs button"); if(t){state.tab=t.dataset.tab;state.stop=null;render();return}
+  if(e.target.closest("#locBtn")){startLocation();return}
+  const q=e.target.closest("[data-q]"); if(q&&state.stop!=null){
+    const s=STOPS[state.stop], k=+q.dataset.q, ok=k===s.quiz.correct;
+    document.querySelectorAll(".quiz .opt").forEach((b,j)=>{b.dataset.state = j===s.quiz.correct?"right":(j===k?"wrong":"")});
+    const fb=document.getElementById("fb"); fb.hidden=false; fb.textContent= ok?s.quiz.right:s.quiz.wrong; fb.style.color= ok?"var(--good)":"var(--bad)";
+  }
+});
+const deep=(location.hash||"").slice(1); const di=STOPS.findIndex(s=>s.id===deep);
+if(di>=0){state.stop=di}
+render();
+if(store.get("loc",false)) startLocation();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
+</script>
+
+</body>
+</html>
