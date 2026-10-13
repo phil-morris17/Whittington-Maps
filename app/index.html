@@ -89,6 +89,12 @@ h1.story{font-family:var(--f-display);font-weight:400;font-size:var(--step-3);li
 .quiz .opt[data-state="wrong"]{border-color:var(--bad);background:var(--bad-soft)}
 .quiz .fb{margin:0;font-weight:700}
 .links{display:flex;flex-wrap:wrap;gap:10px}
+.beyond{display:flex;flex-direction:column;gap:6px;padding-top:8px}
+.beyond h2{font-family:var(--f-display);font-weight:400;font-size:var(--step-2);margin:0}
+ul.stops{list-style:none;margin:0;padding:0}
+ul.stops li{border-bottom:1px solid var(--rule)}
+ul.stops button{display:grid;grid-template-columns:2.4rem 1fr auto;gap:12px;align-items:center;width:100%;text-align:left;background:none;border:0;padding:14px 2px;cursor:pointer}
+.private{margin:0;padding:10px 14px;border-radius:10px;background:var(--bad-soft);color:var(--ink);font-weight:700;max-width:65ch}
 .dist{font-family:var(--f-data);color:var(--muted)}
 
 /* map */
@@ -144,7 +150,7 @@ const STOPS = [
    "The churchyard holds generations of village families. Among the thousands of burials recorded here is the 18th-century antiquarian and rector Samuel Pegge, who served the parish from 1751 to 1796."],
   fact:"The church's Burial in Woollen affidavit register runs from 1675 to 1812 and includes a burial on Christmas Day 1812.",
   quiz:{q:"What replaced the original Norman church in 1863?",options:["Nothing, it still stands","The current Victorian church building","A Methodist chapel"],correct:1,right:"Correct. The Norman church was demolished and rebuilt in 1863.",wrong:"The Norman church was demolished in 1863 and rebuilt as the church you see today."}},
- {id:"grange", sub:"Farming and family life", title:"Whittington Grange", url:SITE+"/notable-properties-their-owners/", voice:"VkkGKj9hpVY",
+ {id:"grange", private:true, sub:"Farming and family life", title:"Whittington Grange", url:SITE+"/notable-properties-their-owners/", voice:"VkkGKj9hpVY",
   paragraphs:["Away from the church and the main road, Whittington Grange represents the quieter, agricultural side of parish life: the fields, tenant farms and rural households that made up much of Old Whittington beyond its famous landmarks.",
    "Families connected to the wider Whittington story, including the Swanwicks, had strong roots in farming as well as engineering and industry. Russell Swanwick held a 38-year tenancy of a Cirencester farm known for award-winning Cotswold sheep and Berkshire pigs."],
   fact:"Field parcel numbers on historic Ordnance Survey maps, like the one this trail is based on, recorded the acreage of every field.",
@@ -154,7 +160,7 @@ const STOPS = [
    "Coaching inns like this one were the social hubs of their era: staging posts for travellers, meeting places for parish business, and sometimes the venue for auctions, inquests or celebrations."],
   fact:"Village greens often doubled as informal marketplaces and the site of maypole dances, fairs and community gatherings well into the 20th century.",
   quiz:{q:"What role did coaching inns like the White Horse typically serve?",options:["Purely private houses","Staging posts and community meeting places","Schoolrooms only"],correct:1,right:"Correct. Inns were central to travel and community life.",wrong:"Inns like this were staging posts for travellers and hubs of community life."}},
- {id:"hall", sub:"The Dixon family", title:"Whittington Hall", url:SITE+"/whittington-hall/",
+ {id:"hall", private:true, sub:"The Dixon family", title:"Whittington Hall", url:SITE+"/whittington-hall/",
   paragraphs:["Whittington Hall marks the culmination of one of the parish's most important family stories. John Dixon, the last of the glassworking Dixons, left his estate to his relative Henry Dixon, who had no interest in glassmaking but used the inheritance to build Whittington Hall and become Lord of the Manor.",
    "This was the turning point in the Dixons' change from industrial glassmakers into the leading landholding family of the parish, a shift that went on to shape local institutions, including the long dispute over the Webster Endowed Grammar School."],
   fact:"Elizabeth Dixon was Henry Dixon's first wife, not his widow, a detail that matters for tracing the family's line of inheritance correctly.",
@@ -179,11 +185,9 @@ const STOPS = [
    "Footpaths like this were the everyday routes of the parish long before motor traffic: shortcuts between farms, church and cottages that villagers walked for generations, still traceable in field boundaries and lane junctions today."],
   fact:"Nonconformist worship in the parish took many forms, from small cottage meetings to purpose-built chapels.",
   quiz:{q:"What does the name “Chapel Cottage” most likely commemorate?",options:["A nearby manor house","An earlier chapel on this spot","A former coaching inn"],correct:1,right:"Correct. The name recalls an earlier chapel here.",wrong:"The name recalls an earlier chapel that once stood on or near this site."}},
- {id:"plough", sub:"Another village inn", title:"The Plough Inn", url:SITE+"/pubs-of-whittington/",
-  paragraphs:["The Plough was one of several public houses that once served Old Whittington, its name drawn, like many rural inns, from the farming life of the surrounding fields.",
-   "Village pubs were meeting places for farm workers, venues for informal business and the place to hear local news, long before other forms of communication reached rural parishes."],
-  fact:"Pub names taken from farm tools and work, such as the Plough or the Harrow, were very common across rural England.",
-  quiz:{q:"Where does a pub name like “The Plough” usually come from?",options:["A landowner's surname","Farming life and tools","A famous battle"],correct:1,right:"Correct. It reflects the farming character of the area.",wrong:"Names like the Plough usually reflect the farming life of the countryside around."}},
+ {id:"poplar", sub:"A village inn", title:"The Poplar", url:SITE+"/pubs-of-whittington/",
+  paragraphs:["The Poplar is one of the public houses of Old Whittington.",
+   "Village pubs were meeting places for farm workers, venues for informal business and the place to hear local news, long before other forms of communication reached rural parishes."]},
  {id:"sicfarm", sub:"Working the land", title:"Sic Farm", url:SITE+"/whittington-enclosure/",
   paragraphs:["At the edge of the mapped area, this farm represents the working land that bordered the village, the fields and holdings that fed and employed many Whittington families alongside the parish's industry.",
    "Farms often changed hands or names over generations, and their exact boundaries are some of the hardest details to pin down in parish history."],
@@ -200,6 +204,11 @@ const STOPS = [
   fact:"John Dixon, the last of the glassworking Dixons, left his estate to Henry Dixon, who put it into building Whittington Hall, ending the family's glassmaking chapter.",
   quiz:{q:"What does the name “Glass House Farm” most likely commemorate?",options:["A greenhouse","The Dixon family's glassmaking","A Victorian conservatory"],correct:1,right:"Correct. It recalls the Dixons' glassmaking industry.",wrong:"The name recalls the Dixon family's glassmaking industry in the parish."}}
 ];
+
+/* Stops on private land stay in the app as stories but are not part of the walking trail. */
+STOPS.sort((a,b)=>(a.private?1:0)-(b.private?1:0));
+const TRAIL_N = STOPS.filter(s=>!s.private).length;
+const NUM_WORDS=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve","Thirteen","Fourteen","Fifteen"];
 
 const VOICE_GROUPS = [
  {title:"Voices of Whittington", blurb:"Figures from the parish's past tell their own stories.", items:[
@@ -238,9 +247,9 @@ function metres(a,b){const R=6371000,r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLng=(b.
   const h=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
 function fmtDist(m){return m<1000?Math.round(m/5)*5+" m":(m/1000).toFixed(1)+" km"}
 function nearest(){ if(!pos) return null; let best=null;
-  STOPS.forEach((s,i)=>{if(s.lat==null)return; const d=metres(pos,s); if(!best||d<best.d) best={s,i,d}}); return best }
+  STOPS.forEach((s,i)=>{if(s.lat==null||s.private)return; const d=metres(pos,s); if(!best||d<best.d) best={s,i,d}}); return best }
 function toast(t){const el=document.getElementById("toast");el.textContent=t;el.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>el.hidden=true,3200)}
-function setProgress(){document.getElementById("progress").textContent = visited.size+" / "+STOPS.length+" visited"}
+function setProgress(){document.getElementById("progress").textContent = STOPS.filter(s=>!s.private&&visited.has(s.id)).length+" / "+TRAIL_N+" visited"}
 
 function startLocation(){
   if(!("geolocation" in navigator)){locMsg="This device can't share its location.";render();return}
@@ -267,25 +276,28 @@ function viewTrail(){
   } else if(watchId==null){
     top=`<div class="locate"><p>${esc(locMsg||"Walking the trail? Let the app show which stop you're nearest.")}</p><button class="btn" id="locBtn">Use my location</button></div>`;
   } else if(locMsg){ top=`<div class="locate"><p>${esc(locMsg)}</p></div>` }
-  const items=STOPS.map((s,i)=>{
+  const items=STOPS.slice(0,TRAIL_N).map((s,i)=>{
     const d = pos&&s.lat!=null ? fmtDist(metres(pos,s)) : "";
     const tick = visited.has(s.id)?`<span class="tick"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2"/></svg>Visited</span>`:"";
     return `<li><button data-open="${i}"><span class="num">${i+1}</span><span><span class="stopname">${esc(s.title)}</span><span class="stopsub">${esc(s.sub)}</span></span><span class="meta">${tick||d}</span></button></li>`}).join("");
-  return `<div class="view">${top}<p class="intro">Thirteen stops around Old Whittington, from Revolution House to Glass House Farm. Take them in any order; each has a short story, a fact and a question.</p><ol class="stops">${items}</ol></div>`;
+  return `<div class="view">${top}<p class="intro">${NUM_WORDS[TRAIL_N]||TRAIL_N} stops around Old Whittington, from ${esc(STOPS[0].title)} to ${esc(STOPS[TRAIL_N-1].title)}. Take them in any order; each has a short story to read.</p><ol class="stops">${items}</ol>
+   ${TRAIL_N<STOPS.length?`<section class="beyond" aria-labelledby="bh"><h2 id="bh">Beyond the trail</h2><p class="note">These places are on private land and can't be seen from the road. Read their stories here, but please don't try to visit.</p>
+   <ul class="stops">${STOPS.slice(TRAIL_N).map((s,k)=>`<li><button data-open="${TRAIL_N+k}"><span class="num" aria-hidden="true">·</span><span><span class="stopname">${esc(s.title)}</span><span class="stopsub">${esc(s.sub)}</span></span><span class="meta"></span></button></li>`).join("")}</ul></section>`:""}</div>`;
 }
 
 function viewStop(i){
   const s=STOPS[i]; const v=s.voice&&VOICE_BY_ID[s.voice];
   const d = pos&&s.lat!=null ? `<span class="dist"> · ${fmtDist(metres(pos,s))} away</span>`:"";
-  const opts=s.quiz.options.map((o,k)=>`<button class="opt" data-q="${k}">${esc(o)}</button>`).join("");
+  const opts=s.quiz?s.quiz.options.map((o,k)=>`<button class="opt" data-q="${k}">${esc(o)}</button>`).join(""):"";
   return `<div class="view story"><button class="back" data-back>‹ All stops</button>
-   <p class="eyebrow">Stop ${i+1} · ${esc(s.sub)}${d}</p><h1 class="story">${esc(s.title)}</h1>
+   <p class="eyebrow">${s.private?"Beyond the trail":"Stop "+(i+1)} · ${esc(s.sub)}${s.private?"":d}</p><h1 class="story">${esc(s.title)}</h1>
+   ${s.private?`<p class="private">Private land, not visible from the road. Please enjoy this story from home and don't try to visit.</p>`:""}
    <div class="storybody">${s.paragraphs.map(p=>`<p>${esc(p)}</p>`).join("")}
-   <p class="fact"><b>Did you know</b>${esc(s.fact)}</p></div>
-   <section class="quiz" aria-labelledby="qh"><h3 id="qh">${esc(s.quiz.q)}</h3>${opts}<p class="fb" id="fb" aria-live="polite" hidden></p></section>
+   ${s.fact?`<p class="fact"><b>Did you know</b>${esc(s.fact)}</p>`:""}</div>
+   ${s.quiz?`<section class="quiz" aria-labelledby="qh"><h3 id="qh">${esc(s.quiz.q)}</h3>${opts}<p class="fb" id="fb" aria-live="polite" hidden></p></section>`:""}
    <div class="links"><a class="btn quiet" href="${s.url}" target="_blank" rel="noopener">Read more on the website</a>
    ${v?`<a class="btn quiet" href="https://youtu.be/${v.id}" target="_blank" rel="noopener">Watch: ${esc(v.name)}</a>`:""}</div>
-   <div class="links">${i>0?`<button class="btn quiet" data-open="${i-1}">‹ Stop ${i}</button>`:""}${i<STOPS.length-1?`<button class="btn" data-open="${i+1}">Next: stop ${i+2} ›</button>`:""}</div></div>`;
+   ${s.private?"":`<div class="links">${i>0?`<button class="btn quiet" data-open="${i-1}">‹ Stop ${i}</button>`:""}${i<TRAIL_N-1?`<button class="btn" data-open="${i+1}">Next: stop ${i+2} ›</button>`:""}</div>`}</div>`;
 }
 
 function viewMap(){
@@ -306,7 +318,7 @@ function viewMap(){
       <g transform="translate(16 ${H-18})"><line x1="0" y1="0" x2="${barPx}" y2="0" stroke="var(--ink)" stroke-width="2"/><text x="0" y="-6" font-size="11" fill="var(--muted)" font-family="var(--f-data)">${bar>=1000?bar/1000+" km":bar+" m"}</text></g>
       <text x="${W-16}" y="24" text-anchor="end" font-size="12" fill="var(--muted)" font-family="var(--f-data)">N ↑</text></svg>`;
   }
-  const missing=STOPS.filter(s=>s.lat==null);
+  const missing=STOPS.filter(s=>s.lat==null&&!s.private);
   return `<div class="view"><div class="mapwrap">${svg||'<p class="note" style="padding:16px">No stop positions recorded yet.</p>'}</div>
    ${watchId==null?`<div class="locate"><p>${esc(locMsg||"Show yourself on the map.")}</p><button class="btn" id="locBtn">Use my location</button></div>`:""}
    <p class="legend">Numbered circles are trail stops; tap one to open it.${pos?" The blue dot is you.":""}</p>
@@ -343,7 +355,7 @@ document.addEventListener("click",e=>{
   const t=e.target.closest("nav.tabs button"); if(t){state.tab=t.dataset.tab;state.stop=null;render();return}
   if(e.target.closest("#locBtn")){startLocation();return}
   const q=e.target.closest("[data-q]"); if(q&&state.stop!=null){
-    const s=STOPS[state.stop], k=+q.dataset.q, ok=k===s.quiz.correct;
+    const s=STOPS[state.stop]; if(!s.quiz) return; const k=+q.dataset.q, ok=k===s.quiz.correct;
     document.querySelectorAll(".quiz .opt").forEach((b,j)=>{b.dataset.state = j===s.quiz.correct?"right":(j===k?"wrong":"")});
     const fb=document.getElementById("fb"); fb.hidden=false; fb.textContent= ok?s.quiz.right:s.quiz.wrong; fb.style.color= ok?"var(--good)":"var(--bad)";
   }
