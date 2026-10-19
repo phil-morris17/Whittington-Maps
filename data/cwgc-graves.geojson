@@ -1,0 +1,261 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "E Burgin",
+    "burial_id": "WH10944",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4252084,
+     53.272743
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J Shawcroft",
+    "burial_id": "WH08161",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4240991,
+     53.27353
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "W Husband",
+    "burial_id": "WH08149",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.424131,
+     53.27342
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "C E Buxton",
+    "burial_id": "WH10761",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4233214,
+     53.273075
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J Elliott",
+    "burial_id": "WH10983",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4232161,
+     53.273125
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J Wright",
+    "burial_id": "WH10452",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4233205,
+     53.273266
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "G Hughes",
+    "burial_id": "WH10618",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4232553,
+     53.273296
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "A Matchett",
+    "burial_id": "WH11113",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4229777,
+     53.273678
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J Abell",
+    "burial_id": "WH07942",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4233075,
+     53.273746
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J E Straw",
+    "burial_id": "WH08242",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4232376,
+     53.27386
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "J Bunting",
+    "burial_id": "WH08241",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4232296,
+     53.27383
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "L W Davidson",
+    "burial_id": "WH08264",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.423328,
+     53.273827
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "E Bradley",
+    "burial_id": "WH08148",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4240422,
+     53.27378
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "H Green",
+    "burial_id": "WH08141",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4239789,
+     53.273792
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "E Watts",
+    "burial_id": "WH07809",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4240308,
+     53.273888
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "E Booth",
+    "burial_id": "WH07786",
+    "kind": "Commonwealth War Grave",
+    "source": "GPS, WHHG Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4240205,
+     53.273903
+    ]
+   }
+  }
+ ]
+}
