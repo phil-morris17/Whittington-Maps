@@ -1,0 +1,181 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "St Bartholomew's church (1863)",
+    "source": "Measured on site: nave 84 x 60 ft, chancel 18 x 24 ft centred on the east wall; south wall 22 ft north of the path"
+   },
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -1.4250676,
+       53.27287
+      ],
+      [
+       -1.4246844,
+       53.2728899
+      ],
+      [
+       -1.4246914,
+       53.2729393
+      ],
+      [
+       -1.4246093,
+       53.2729435
+      ],
+      [
+       -1.4246187,
+       53.2730094
+      ],
+      [
+       -1.4247009,
+       53.2730052
+      ],
+      [
+       -1.4247079,
+       53.2730546
+      ],
+      [
+       -1.4250911,
+       53.2730348
+      ],
+      [
+       -1.4250676,
+       53.27287
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "William & Hannah Cooke (NS 9/28)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4246364,
+     53.273133
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "William Mettam (NS 8/25)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4247459,
+     53.2731274
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Joseph Walker (NS 9/23)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4247824,
+     53.2731255
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Stephen Gordon (NS 9/2, probably 9/22)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4248116,
+     53.273124
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Mary Ann Mitchell (NS 9/17)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4248699,
+     53.273121
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "John Cooke",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4247086,
+     53.2731238
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "James Jackson (NS 12/20)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4246402,
+     53.2731273
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Ellen Stringer",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.424599,
+     53.2730962
+    ]
+   }
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "name": "Thomas Varley (EE 6/27)",
+    "source": "Tape from the chancel NE corner, Phil Morris 26 Oct 2026"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -1.4246754,
+     53.2731487
+    ]
+   }
+  }
+ ]
+}
